@@ -24,16 +24,16 @@ namespace BeverageBackend.Controllers
         public IActionResult GetAllCategories()
         {
             var cates = _mapper.Map<List<CategoryDto>>(_category.GetCategories());
-            return Ok(cates);
+            return StatusCode(200, cates);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetCategoryById(int id)
         {
             if (!_category.CategoryExists(id))
-                return NotFound();
+                return StatusCode(404,"Khong tim thay category");
             var cate = _mapper.Map<CategoryDto>(_category.GetCategory(id));
-            return Ok(cate);
+            return StatusCode(200, cate);
         }
 
         [HttpGet("{id}/products")]
@@ -49,6 +49,40 @@ namespace BeverageBackend.Controllers
         public IActionResult GetCategoryByProductId(int prodId)
         {
             return Ok(_category.GetCategoryByProduct(prodId));
+        }
+
+        [HttpPost]
+        public IActionResult CreateCategory([FromBody] CategoryDto categoryDto)
+        {
+            var category = _category.GetCategories().Where(c => c.Name.Trim().ToUpper() == categoryDto.Name.TrimEnd().ToUpper()).FirstOrDefault();
+            if (category != null)
+            {
+                ModelState.AddModelError("Name", "Category already exits");
+                return BadRequest(ModelState);
+            }
+            var categoryMap = _mapper.Map<Category>(categoryDto);
+            if (!_category.CreateCategory(categoryMap))
+            {
+                return StatusCode(500, "Error while saving");
+            }
+            return Ok("Create Successfully");
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCategory(int id)
+        {
+            if (!_category.CategoryExists(id))
+                return NotFound();
+            if (_category.IsRemovable(id))
+            {
+                ModelState.AddModelError("Category", "Can't delete this category because it has associated products");
+                return BadRequest(ModelState);
+            }
+            if (!_category.DeleteCategory(id))
+            {
+                return StatusCode(500, "Error while saving");
+            }
+            return Ok("Delete successfully");
         }
     }
 }

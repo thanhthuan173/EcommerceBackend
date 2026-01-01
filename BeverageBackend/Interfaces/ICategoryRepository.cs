@@ -9,5 +9,9 @@ namespace BeverageBackend.Interfaces
         ICollection<Product> GetProductsByCategory(int id);
         Category GetCategoryByProduct(int prodId);
         bool CategoryExists(int id);
+        bool CreateCategory(Category category);
+        bool Save();
+        bool DeleteCategory(int id);
+        bool IsRemovable(int id);
     }
 }
