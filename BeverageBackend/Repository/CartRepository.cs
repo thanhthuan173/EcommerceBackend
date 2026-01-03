@@ -37,5 +37,20 @@ namespace BeverageBackend.Repository
         {
             return _context.CartItems.Where(ci => ci.CartId == cartId).Include(ci=>ci.Product).ToList();
         }
+
+        public void CreateCart(Customer customer)
+        {
+            var cart = new Cart
+            {
+                Customer = customer
+            };
+            _context.Carts.Add(cart);
+        }
+
+        public void DeleteCart(int customerId)
+        {
+            var cart = _context.Carts.Where(c => c.CustomerId == customerId).FirstOrDefault();
+            _context.Carts.Remove(cart);
+        }
     }
 }
