@@ -70,7 +70,7 @@ namespace BeverageBackend.Controllers
             {
                 return NotFound();
             }
-            if (_customer.DeleteCustomer(id))
+            if (!_customer.DeleteCustomer(id))
             {
                 return StatusCode(500, "Error while saving");
             }

@@ -11,11 +11,13 @@ namespace BeverageBackend.Controllers
     public class ProductController:ControllerBase
     {
         private readonly IProductRepository _product;
+        private readonly ICategoryRepository _category;
         private readonly IMapper _mapper;
 
-        public ProductController(IProductRepository productRepository,IMapper mapper)
+        public ProductController(IProductRepository productRepository,IMapper mapper,ICategoryRepository category)
         {
             _product = productRepository;
+            _category = category;
             _mapper = mapper;
         }
 
@@ -68,6 +70,27 @@ namespace BeverageBackend.Controllers
             if (!_product.ProductExists(prodId))
                 return NotFound();
             return Ok(_product.CountCarts(prodId));
+        }
+
+        [HttpPost]
+        public IActionResult CreateProduct([FromBody] ProductDto productDto)
+        {
+            var product = _product.GetProducts().Where(p => p.Name == productDto.Name&&p.CategoryId==productDto.CategoryId).FirstOrDefault();
+            if (product != null)
+            {
+                ModelState.AddModelError("Name","Product already exist");
+                return BadRequest(ModelState);
+            }
+            if (!_category.CategoryExists(productDto.CategoryId))
+            {
+                return NotFound();
+            }
+            var prodMap = _mapper.Map<Product>(productDto);
+            if (!_product.CreateProduct(prodMap))
+            {
+                return StatusCode(500, "Error while saving");
+            }
+            return Ok("Create successfully");
         }
     }
 }

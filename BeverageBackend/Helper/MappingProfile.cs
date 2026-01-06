@@ -9,6 +9,7 @@ namespace BeverageBackend.Helper
         public MappingProfile()
         {
             CreateMap<Product, ProductDto>();
+            CreateMap<ProductDto, Product>();
             CreateMap<Category, CategoryDto>();
             CreateMap<CategoryDto, Category>();
             CreateMap<Customer, CustomerDto>();

@@ -45,5 +45,17 @@ namespace BeverageBackend.Repository
             var carts = _context.CartItems.Where(ci => ci.ProductId == prodId);
             return carts.Count();
         }
+
+        public bool CreateProduct(Product product)
+        {
+            _context.Products.Add(product);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

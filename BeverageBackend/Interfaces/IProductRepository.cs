@@ -10,5 +10,7 @@ namespace BeverageBackend.Interfaces
         int CountOrders(int prodId);
         int CountCarts(int prodId);
         bool ProductExists(int id);
+        bool CreateProduct(Product product);
+        bool Save();
     }
 }
