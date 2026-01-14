@@ -68,6 +68,24 @@ namespace BeverageBackend.Controllers
             return Ok("Create Successfully");
         }
 
+        [HttpPut("{id}")]
+        public IActionResult UpdateCategory([FromRoute]int id, [FromBody] UpdateCategoryDto updateCategoryDto)
+        {
+            var category = _category.GetCategory(id);
+            if (category == null)
+                return NotFound();
+            var newName = updateCategoryDto.Name.Trim();
+            if (category.Name == newName)
+                return NoContent();
+            category.Name = newName;
+            if (!_category.UpdateCategory(category))
+            {
+                ModelState.AddModelError("","Error while saving");
+                return BadRequest(ModelState);
+            }
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public IActionResult DeleteCategory(int id)
         {

@@ -10,6 +10,7 @@ namespace BeverageBackend.Interfaces
         Category GetCategoryByProduct(int prodId);
         bool CategoryExists(int id);
         bool CreateCategory(Category category);
+        bool UpdateCategory(Category category);
         bool Save();
         bool DeleteCategory(int id);
         bool IsRemovable(int id);
