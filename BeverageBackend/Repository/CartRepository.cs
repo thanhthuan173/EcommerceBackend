@@ -1,4 +1,5 @@
-﻿using BeverageBackend.Interfaces;
+﻿using BeverageBackend.Dto.Cart;
+using BeverageBackend.Interfaces;
 using BeverageBackend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -62,6 +63,17 @@ namespace BeverageBackend.Repository
         public bool Save()
         {
             return _context.SaveChanges() > 0 ? true : false;
+        }
+
+        public CartTotalDto TotalAmount(int cartId)
+        {
+            var total = _context.CartItems.Where(ci => ci.CartId == cartId).Sum(ci => ci.UnitPrice * ci.Quantity);
+            var cartTotal = new CartTotalDto
+            {
+                CartId = cartId,
+                TotalAmount = total
+            };
+            return cartTotal;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BeverageBackend.Models;
+﻿using BeverageBackend.Dto.Cart;
+using BeverageBackend.Models;
 
 namespace BeverageBackend.Interfaces
 {
@@ -11,6 +12,7 @@ namespace BeverageBackend.Interfaces
         void CreateCart(Customer customer);
         void DeleteCart(int customerId);
         bool AddCartItem(CartItem cartItem);
+        CartTotalDto TotalAmount(int cartId);
         bool Save();
         bool CartExists(int id);
     }

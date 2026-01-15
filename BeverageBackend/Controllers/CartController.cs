@@ -80,5 +80,14 @@ namespace BeverageBackend.Controllers
             var prods = _mapper.Map<List<CartItemDto>>(_cart.GetCartItems(cartId));
             return Ok(prods);
         }
+
+        [HttpGet("{cartId}/total")]
+        public IActionResult GetTotalAmount([FromRoute]int cartId)
+        {
+            if (!_cart.CartExists(cartId))
+                return NotFound();
+            var total = _cart.TotalAmount(cartId);
+            return Ok(total);
+        }
     }
 }
