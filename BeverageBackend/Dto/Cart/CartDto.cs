@@ -1,4 +1,4 @@
-﻿namespace BeverageBackend.Dto
+﻿namespace BeverageBackend.Dto.Cart
 {
     public class CartDto
     {

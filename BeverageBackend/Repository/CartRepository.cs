@@ -52,5 +52,16 @@ namespace BeverageBackend.Repository
             var cart = _context.Carts.Where(c => c.CustomerId == customerId).FirstOrDefault();
             _context.Carts.Remove(cart);
         }
+
+        public bool AddCartItem(CartItem cartItem)
+        {
+            _context.CartItems.Add(cartItem);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            return _context.SaveChanges() > 0 ? true : false;
+        }
     }
 }

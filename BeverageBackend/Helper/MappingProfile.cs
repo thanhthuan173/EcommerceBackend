@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BeverageBackend.Dto;
+using BeverageBackend.Dto.Cart;
 using BeverageBackend.Models;
 
 namespace BeverageBackend.Helper
@@ -16,6 +17,7 @@ namespace BeverageBackend.Helper
             CreateMap<CreateCustomerDto, Customer>();
             CreateMap<Cart, CartDto>();
             CreateMap<CartItem, CartItemDto>();
+            CreateMap<AddCartItemDto,CartItem>();
             CreateMap<Order, OrderDto>();
             CreateMap<OrderItem, OrderItemDto>();
         }

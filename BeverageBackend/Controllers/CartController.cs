@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using BeverageBackend.Dto;
+using BeverageBackend.Dto.Cart;
 using BeverageBackend.Interfaces;
+using BeverageBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeverageBackend.Controllers
@@ -10,11 +12,13 @@ namespace BeverageBackend.Controllers
     public class CartController:ControllerBase
     {
         private readonly ICartRepository _cart;
+        private readonly IProductRepository _product;
         private readonly IMapper _mapper;
 
-        public CartController(ICartRepository cart,IMapper mapper)
+        public CartController(ICartRepository cart,IProductRepository product,IMapper mapper)
         {
             _cart = cart;
+            _product = product;
             _mapper = mapper;
         }
 
@@ -41,6 +45,31 @@ namespace BeverageBackend.Controllers
                 return NotFound();
             var cus = _mapper.Map<CustomerDto>(_cart.GetCustomerByCartId(cartId));
             return Ok(cus);
+        }
+
+        [HttpPost]
+        public IActionResult AddItemToCart([FromBody]AddCartItemDto cartItemDto)
+        {
+            var cartItems = _cart.GetCartItems(cartItemDto.CartId);
+            var cartItem = cartItems.Where(ci => ci.ProductId == cartItemDto.ProductId).FirstOrDefault();
+            if (cartItem != null)
+            {
+                cartItem.Quantity += cartItemDto.Quantity;
+                if (!_cart.Save())
+                {
+                    ModelState.AddModelError("", "Error while saving");
+                    return BadRequest(ModelState);
+                }
+                return NoContent();
+            }
+            var price = _product.GetProduct(cartItemDto.ProductId).Price;
+            var mapCartItem = _mapper.Map<CartItem>(cartItemDto);
+            mapCartItem.UnitPrice = price;
+            if (!_cart.AddCartItem(mapCartItem))
+            {
+                return BadRequest(ModelState);
+            }
+            return NoContent();
         }
 
         [HttpGet("{cartId}/items")]

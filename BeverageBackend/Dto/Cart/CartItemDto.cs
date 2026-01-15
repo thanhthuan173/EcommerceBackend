@@ -1,7 +1,7 @@
 ﻿using BeverageBackend.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BeverageBackend.Dto
+namespace BeverageBackend.Dto.Cart
 {
     public class CartItemDto
     {
