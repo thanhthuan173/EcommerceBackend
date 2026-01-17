@@ -75,5 +75,21 @@ namespace BeverageBackend.Repository
             };
             return cartTotal;
         }
+
+        public bool DeleteCartItem(int cartId, int prodId)
+        {
+            var cartItem=  _context.CartItems.Where(ci => ci.CartId == cartId && ci.ProductId == prodId).FirstOrDefault();
+            if (cartItem == null)
+                return false;
+            _context.CartItems.Remove(cartItem);
+            return Save();
+        }
+
+        public bool DeleteCartItems(int cartId)
+        {
+            var cartItems = _context.CartItems.Where(ci => ci.CartId == cartId).ToList();
+            _context.CartItems.RemoveRange(cartItems);
+            return Save();
+        }
     }
 }

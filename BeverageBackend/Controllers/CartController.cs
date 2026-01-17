@@ -89,5 +89,25 @@ namespace BeverageBackend.Controllers
             var total = _cart.TotalAmount(cartId);
             return Ok(total);
         }
+
+        [HttpDelete("{cartId}/items/{prodId}")]
+        public IActionResult DeleteCartItem([FromRoute]int cartId, [FromRoute] int prodId)
+        {
+            var isDeleted = _cart.DeleteCartItem(cartId, prodId);
+            if (!isDeleted)
+                return NotFound();
+            return NoContent();
+        }
+
+        [HttpDelete("{cartId}/items")]
+        public IActionResult DeleteCartItems([FromRoute]int cartId)
+        {
+            if (!_cart.DeleteCartItems(cartId))
+            {
+                ModelState.AddModelError("", "Error while saving");
+                return BadRequest(ModelState);
+            }
+            return NoContent();
+        }
     }
 }

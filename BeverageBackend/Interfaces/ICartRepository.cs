@@ -12,6 +12,8 @@ namespace BeverageBackend.Interfaces
         void CreateCart(Customer customer);
         void DeleteCart(int customerId);
         bool AddCartItem(CartItem cartItem);
+        bool DeleteCartItem(int cartId,int prodId);
+        bool DeleteCartItems(int cartId);
         CartTotalDto TotalAmount(int cartId);
         bool Save();
         bool CartExists(int id);
