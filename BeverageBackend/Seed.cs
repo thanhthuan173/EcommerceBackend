@@ -121,15 +121,17 @@ namespace BeverageBackend
             var orders = new List<Order>()
             {
                 new Order {
-                    CreatedDate = DateTime.Now.AddDays(-1),
-                    Status = "Completed",
+                    CreatedDate = DateTime.UtcNow,
+                    Status = OrderStatus.PendingPayment,
                     TotalAmount = 60000,
+                    IsDeleted=false,
                     CustomerId = customers[0].Id
                 },
                 new Order {
-                    CreatedDate = DateTime.Now,
-                    Status = "Pending",
+                    CreatedDate = DateTime.UtcNow,
+                    Status = OrderStatus.PendingPayment,
                     TotalAmount = 35000,
+                    IsDeleted=false,
                     CustomerId = customers[1].Id
                 }
             };

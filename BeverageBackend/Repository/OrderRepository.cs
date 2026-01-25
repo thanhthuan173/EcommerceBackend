@@ -7,10 +7,41 @@ namespace BeverageBackend.Repository
     public class OrderRepository : IOrderRepository
     {
         private readonly BeverageDbContext _context;
+        private readonly ICartRepository _cartRepository;
 
-        public OrderRepository(BeverageDbContext context)
+        public OrderRepository(BeverageDbContext context,ICartRepository cartRepository)
         {
             _context = context;
+            _cartRepository = cartRepository;
+        }
+
+        public int CreateOrder(int cartId)
+        {
+            var cart = _context.Carts.Where(c => c.Id == cartId).FirstOrDefault();
+            var order = new Order()
+            {
+                TotalAmount = _cartRepository.TotalAmount(cartId).TotalAmount,
+                CustomerId = cart.CustomerId,
+            };
+            var items = _cartRepository.GetCartItems(cartId);
+            var orderItems = new List<OrderItem>();
+            foreach (var item in items)
+            {
+                orderItems.Add(new OrderItem
+                {
+                    OrderId = order.Id,
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice
+                });
+            }
+            order.OrderItems = orderItems;
+            _context.Orders.Add(order);
+            var save = _context.SaveChanges();
+            if (save == 0)
+                return save;
+            //_cartRepository.DeleteCartItems(cartId);
+            return order.Id;
         }
 
         public Customer GetCustomerByOrderId(int orderId)

@@ -2,6 +2,7 @@
 using BeverageBackend.Dto;
 using BeverageBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BeverageBackend.Controllers
 {
@@ -10,11 +11,13 @@ namespace BeverageBackend.Controllers
     public class OrderController:ControllerBase
     {
         private readonly IOrderRepository _order;
+        private readonly ICartRepository _cart;
         private readonly IMapper _mapper;
 
-        public OrderController(IOrderRepository order,IMapper mapper)
+        public OrderController(IOrderRepository order,ICartRepository cart,IMapper mapper)
         {
             _order = order;
+            _cart = cart;
             _mapper = mapper;
         }
 
@@ -41,6 +44,22 @@ namespace BeverageBackend.Controllers
                 NotFound();
             var cus = _mapper.Map<CustomerDto>(_order.GetCustomerByOrderId(orderId));
             return Ok(cus);
+        }
+
+        [HttpPost("{cartId}")]
+        public IActionResult CreateOrder(int cartId)
+        {
+            if (!_cart.CartExists(cartId))
+                NotFound();
+            if (_cart.GetCartItems(cartId).IsNullOrEmpty())
+                return BadRequest("Cart is empty");
+            var save = _order.CreateOrder(cartId);
+            if (save==0)
+            {
+                ModelState.AddModelError("", "Error while saving");
+                return BadRequest();
+            }
+            return Ok(save);
         }
     }
 }
