@@ -6,12 +6,14 @@ namespace BeverageBackend.Models
     public class BeverageDbContext:DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
 
         public BeverageDbContext(DbContextOptions<BeverageDbContext> options) : base(options)
         {
@@ -40,6 +42,13 @@ namespace BeverageBackend.Models
             {
                 entity.HasKey(cus => cus.Id);
                 entity.HasOne(cus => cus.Cart).WithOne(ca => ca.User).HasForeignKey<Cart>(ca => ca.UserId);
+            });
+
+            modelBuilder.Entity<UserRole>(entity =>
+            {
+                entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+                entity.HasOne(u => u.User).WithMany(ur => ur.UserRoles).HasForeignKey(u => u.UserId);
+                entity.HasOne(r => r.Role).WithMany(ur => ur.UserRoles).HasForeignKey(r => r.RoleId);
             });
         }
     }

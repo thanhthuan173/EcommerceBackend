@@ -13,5 +13,6 @@
 
         public Cart Cart { get; set; }
         public ICollection<Order> Orders { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }
