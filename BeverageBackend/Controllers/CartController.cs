@@ -38,12 +38,12 @@ namespace BeverageBackend.Controllers
             return Ok(cart);
         }
 
-        [HttpGet("{cartId}/customer")]
-        public IActionResult GetCustomerByCartId(int cartId)
+        [HttpGet("{cartId}/user")]
+        public IActionResult GetUserByCartId(int cartId)
         {
             if (!_cart.CartExists(cartId))
                 return NotFound();
-            var cus = _mapper.Map<CustomerDto>(_cart.GetCustomerByCartId(cartId));
+            var cus = _mapper.Map<UserDto>(_cart.GetUserByCartId(cartId));
             return Ok(cus);
         }
 

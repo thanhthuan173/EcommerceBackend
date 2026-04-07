@@ -61,10 +61,10 @@ namespace BeverageBackend
             _context.Products.AddRange(products);
             _context.SaveChanges();
 
-            //CUSTOMERS
-            var customers = new List<Customer>()
+            //USERS
+            var users = new List<User>()
             {
-                new Customer {
+                new User {
                     FullName = "Nguyen Van A",
                     Gender = "Male",
                     Phone = "0909000001",
@@ -73,7 +73,7 @@ namespace BeverageBackend
                     Username = "nguyenvana",
                     HashPassword = "123456"  //hash
                 },
-                new Customer {
+                new User {
                     FullName = "Tran Thi B",
                     Gender = "Female",
                     Phone = "0909000002",
@@ -84,14 +84,14 @@ namespace BeverageBackend
                 }
             };
 
-            _context.Customers.AddRange(customers);
+            _context.Users.AddRange(users);
             _context.SaveChanges();
 
             //CARTS
             var carts = new List<Cart>()
             {
-                new Cart { CustomerId = customers[0].Id },
-                new Cart { CustomerId = customers[1].Id }
+                new Cart { UserId = users[0].Id },
+                new Cart { UserId = users[1].Id }
             };
 
             _context.Carts.AddRange(carts);
@@ -125,14 +125,14 @@ namespace BeverageBackend
                     Status = OrderStatus.PendingPayment,
                     TotalAmount = 60000,
                     IsDeleted=false,
-                    CustomerId = customers[0].Id
+                    UserId = users[0].Id
                 },
                 new Order {
                     CreatedDate = DateTime.UtcNow,
                     Status = OrderStatus.PendingPayment,
                     TotalAmount = 35000,
                     IsDeleted=false,
-                    CustomerId = customers[1].Id
+                    UserId = users[1].Id
                 }
             };
 

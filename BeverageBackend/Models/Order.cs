@@ -11,8 +11,8 @@ namespace BeverageBackend.Models
         public decimal TotalAmount { get; set; }
         public bool IsDeleted { get; set; } = false;
 
-        public int CustomerId { get; set; }
-        public Customer Customer { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
     }
 }

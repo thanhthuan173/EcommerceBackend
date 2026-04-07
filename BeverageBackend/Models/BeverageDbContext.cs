@@ -5,7 +5,7 @@ namespace BeverageBackend.Models
 {
     public class BeverageDbContext:DbContext
     {
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -36,10 +36,10 @@ namespace BeverageBackend.Models
                 entity.HasOne(p => p.Product).WithMany(oi => oi.OrderItems).HasForeignKey(p => p.ProductId);
             });
 
-            modelBuilder.Entity<Customer>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(cus => cus.Id);
-                entity.HasOne(cus => cus.Cart).WithOne(ca => ca.Customer).HasForeignKey<Cart>(ca => ca.CustomerId);
+                entity.HasOne(cus => cus.Cart).WithOne(ca => ca.User).HasForeignKey<Cart>(ca => ca.UserId);
             });
         }
     }

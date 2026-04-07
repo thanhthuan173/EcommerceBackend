@@ -21,7 +21,7 @@ namespace BeverageBackend.Repository
             var order = new Order()
             {
                 TotalAmount = _cartRepository.TotalAmount(cartId).TotalAmount,
-                CustomerId = cart.CustomerId,
+                UserId = cart.UserId,
             };
             var items = _cartRepository.GetCartItems(cartId);
             var orderItems = new List<OrderItem>();
@@ -44,9 +44,9 @@ namespace BeverageBackend.Repository
             return order.Id;
         }
 
-        public Customer GetCustomerByOrderId(int orderId)
+        public User GetUserByOrderId(int orderId)
         {
-            return _context.Orders.Where(o => o.Id == orderId).Select(o => o.Customer).FirstOrDefault();
+            return _context.Orders.Where(o => o.Id == orderId).Select(o => o.User).FirstOrDefault();
         }
 
         public Order GetOrder(int id)

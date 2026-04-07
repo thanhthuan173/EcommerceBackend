@@ -37,12 +37,12 @@ namespace BeverageBackend.Controllers
             return Ok(order);
         }
 
-        [HttpGet("{orderId}/customer")]
-        public IActionResult GetCustomerByOrderId(int orderId)
+        [HttpGet("{orderId}/user")]
+        public IActionResult GetUserByOrderId(int orderId)
         {
             if (!_order.OrderExists(orderId))
                 NotFound();
-            var cus = _mapper.Map<CustomerDto>(_order.GetCustomerByOrderId(orderId));
+            var cus = _mapper.Map<UserDto>(_order.GetUserByOrderId(orderId));
             return Ok(cus);
         }
 

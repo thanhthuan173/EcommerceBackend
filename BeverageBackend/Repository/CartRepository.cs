@@ -29,9 +29,9 @@ namespace BeverageBackend.Repository
             return _context.Carts.ToList();
         }
 
-        public Customer GetCustomerByCartId(int cartId)
+        public User GetUserByCartId(int cartId)
         {
-            return _context.Carts.Where(c => c.Id == cartId).Select(c => c.Customer).FirstOrDefault();
+            return _context.Carts.Where(c => c.Id == cartId).Select(c => c.User).FirstOrDefault();
         }
 
         public ICollection<CartItem> GetCartItems(int cartId)
@@ -39,18 +39,18 @@ namespace BeverageBackend.Repository
             return _context.CartItems.Where(ci => ci.CartId == cartId).Include(ci=>ci.Product).ToList();
         }
 
-        public void CreateCart(Customer customer)
+        public void CreateCart(User user)
         {
             var cart = new Cart
             {
-                Customer = customer
+                User = user
             };
             _context.Carts.Add(cart);
         }
 
-        public void DeleteCart(int customerId)
+        public void DeleteCart(int userId)
         {
-            var cart = _context.Carts.Where(c => c.CustomerId == customerId).FirstOrDefault();
+            var cart = _context.Carts.Where(c => c.UserId == userId).FirstOrDefault();
             _context.Carts.Remove(cart);
         }
 

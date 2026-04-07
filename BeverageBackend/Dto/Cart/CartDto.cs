@@ -3,7 +3,7 @@
     public class CartDto
     {
         public int Id { get; set; }
-        public int CustomerId { get; set; }
+        public int UserId { get; set; }
         public ICollection<CartItemDto> CartItems { get; set; }
     }
 }
