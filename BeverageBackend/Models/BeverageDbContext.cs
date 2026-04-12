@@ -41,6 +41,11 @@ namespace BeverageBackend.Models
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(cus => cus.Id);
+                entity.Property(u => u.Email).IsRequired();
+                entity.Property(u => u.Username).IsRequired();
+                entity.Property(u => u.HashPassword).IsRequired();
+                entity.HasIndex(u => u.Email).IsUnique();
+                entity.HasIndex(u => u.Username).IsUnique();
                 entity.HasOne(cus => cus.Cart).WithOne(ca => ca.User).HasForeignKey<Cart>(ca => ca.UserId);
             });
 
