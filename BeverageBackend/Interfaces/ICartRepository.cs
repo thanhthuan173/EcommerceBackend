@@ -9,7 +9,7 @@ namespace BeverageBackend.Interfaces
         Cart GetCart(int id);
         User GetUserByCartId(int cartId);
         ICollection<CartItem> GetCartItems(int cartId);
-        void CreateCart(User user);
+        void CreateCart(Cart cart);
         void DeleteCart(int userId);
         bool AddCartItem(CartItem cartItem);
         bool DeleteCartItem(int cartId,int prodId);

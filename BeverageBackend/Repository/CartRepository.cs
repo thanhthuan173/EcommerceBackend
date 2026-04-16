@@ -39,12 +39,8 @@ namespace BeverageBackend.Repository
             return _context.CartItems.Where(ci => ci.CartId == cartId).Include(ci=>ci.Product).ToList();
         }
 
-        public void CreateCart(User user)
+        public void CreateCart(Cart cart)
         {
-            var cart = new Cart
-            {
-                User = user
-            };
             _context.Carts.Add(cart);
         }
 

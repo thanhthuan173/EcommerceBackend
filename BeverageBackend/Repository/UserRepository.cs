@@ -1,24 +1,21 @@
 ﻿using BeverageBackend.Interfaces;
 using BeverageBackend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeverageBackend.Repository
 {
     public class UserRepository : IUserRepository
     {
         private BeverageDbContext _context;
-        private readonly ICartRepository _cart;
 
-        public UserRepository(BeverageDbContext context,ICartRepository cart)
+        public UserRepository(BeverageDbContext context)
         {
             _context = context;
-            _cart = cart;
         }
 
-        public bool CreateUser(User user)
+        public void Add(User user)
         {
-            _context.Add(user);
-            _cart.CreateCart(user);
-            return Save();
+            _context.Users.Add(user);
         }
 
         public bool UserExits(int id)
@@ -26,7 +23,7 @@ namespace BeverageBackend.Repository
             return _context.Users.Any(c => c.Id == id);
         }
 
-        public User GetUser(int id)
+        public User? GetUser(int id)
         {
             return _context.Users.Where(c => c.Id == id).FirstOrDefault();
         }
@@ -45,14 +42,33 @@ namespace BeverageBackend.Repository
         public bool Save()
         {
             var saved = _context.SaveChanges();
-            return saved > 1 ? true : false;
+            return saved > 0 ? true : false;
         }
 
         public bool DeleteUser(int id)
         {
-            var cus = _context.Users.Where(c => c.Id == id).FirstOrDefault();
-            _context.Users.Remove(cus);
-            _cart.DeleteCart(id);
+            var user = _context.Users.Where(c => c.Id == id).FirstOrDefault();
+            if (user == null)
+            {
+                return false;
+            }
+            user.IsActive = false;
+            return Save();
+        }
+
+        public async Task<User?> GetByUsername(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+        }
+
+        public async Task<User?> GetByEmail(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public bool CreateUser(User user)
+        {
+            _context.Users.Add(user);
             return Save();
         }
     }
