@@ -3,6 +3,8 @@ using BeverageBackend.Dto;
 using BeverageBackend.Dto.Auth;
 using BeverageBackend.Interfaces;
 using BeverageBackend.Interfaces.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeverageBackend.Controllers
@@ -18,7 +20,7 @@ namespace BeverageBackend.Controllers
             _service = service;
         }
 
-        [HttpPost("/register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
             if (!ModelState.IsValid)
@@ -27,6 +29,28 @@ namespace BeverageBackend.Controllers
             }
             await _service.Register(dto);
             return Ok("Regiter successfully");
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var token = await _service.Login(dto);
+                return Ok(new
+                {
+                    accesstoken=token
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

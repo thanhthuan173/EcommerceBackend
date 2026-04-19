@@ -56,14 +56,19 @@ namespace BeverageBackend.Repository
             return Save();
         }
 
-        public async Task<User?> GetByUsername(string username)
+        public async Task<User?> GetByUsernameAsync(string username)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<User?> GetByEmail(string email)
+        public async Task<User?> GetByEmailAsync(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<User?> GetByUsernameOrEmailAsync(string account)
+        {
+            return await _context.Users.Where(u => u.Username == account || u.Email == account).FirstOrDefaultAsync();
         }
 
         public bool CreateUser(User user)

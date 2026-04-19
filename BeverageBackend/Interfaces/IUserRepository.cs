@@ -6,8 +6,9 @@ namespace BeverageBackend.Interfaces
     {
         ICollection<User> GetUsers();
         User? GetUser(int id);
-        Task<User?> GetByUsername(string username);
-        Task<User?> GetByEmail(string email);
+        Task<User?> GetByUsernameAsync(string username);
+        Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetByUsernameOrEmailAsync(string account);
         ICollection<Order> GetOrdersByUser(int id);
         void Add(User user);
         bool CreateUser(User user);

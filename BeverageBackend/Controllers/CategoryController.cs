@@ -2,6 +2,7 @@
 using BeverageBackend.Dto;
 using BeverageBackend.Interfaces;
 using BeverageBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace BeverageBackend.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
+    [Authorize(Roles ="ADMIN")]
     public class CategoryController:ControllerBase
     {
         private ICategoryRepository _category;

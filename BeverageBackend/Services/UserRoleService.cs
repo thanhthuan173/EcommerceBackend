@@ -17,16 +17,9 @@ namespace BeverageBackend.Services
             _context = context;
         }
 
-        public async Task AddAsync(int userId, int roleId)
+        public async Task AddAsync(UserRole userRole)
         {
-            var isExisted = await _repo.IsExisted(userId,roleId);
-            if (isExisted)
-                throw new Exception("User role already existed");
-            var userRole = new UserRole()
-            {
-                UserId = userId,
-                RoleId = roleId
-            };
+            
             _repo.Add(userRole);
             await _context.SaveChangesAsync();
         }

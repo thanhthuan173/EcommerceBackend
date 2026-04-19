@@ -22,6 +22,11 @@ namespace BeverageBackend.Repository
             _context.Remove(userRole);
         }
 
+        public async Task<List<string>> GetRoleNameByUserAsync(int userId)
+        {
+            return await _context.UserRoles.Where(ur => ur.UserId == userId).Select(ur => ur.Role.Name).ToListAsync();
+        }
+
         public async Task<List<UserRole>> GetByUserAsync(int userId)
         {
             return await _context.UserRoles.Where(ur => ur.UserId == userId).ToListAsync();

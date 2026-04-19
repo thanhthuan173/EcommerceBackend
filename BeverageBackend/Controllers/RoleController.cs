@@ -1,5 +1,6 @@
 ﻿using BeverageBackend.Dto.Role;
 using BeverageBackend.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeverageBackend.Controllers
@@ -23,6 +24,7 @@ namespace BeverageBackend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles ="ADMIN")]
         public async Task<IActionResult> Create([FromBody] RoleDto dto)
         {
             await _service.CreateAsync(dto.Name);
