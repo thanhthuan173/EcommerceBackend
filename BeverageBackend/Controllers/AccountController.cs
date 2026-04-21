@@ -42,15 +42,33 @@ namespace BeverageBackend.Controllers
             try
             {
                 var token = await _service.Login(dto);
-                return Ok(new
-                {
-                    accesstoken=token
-                });
+                return Ok(token);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenDto dto)
+        {
+            try
+            {
+                var token = await _service.RefreshToken(dto);
+                return Ok(token);
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout(RefreshTokenDto dto)
+        {
+            await _service.Logout(dto);
+            return Ok();
         }
     }
 }

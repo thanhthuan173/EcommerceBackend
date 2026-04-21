@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace BeverageBackend.Services
@@ -16,7 +17,7 @@ namespace BeverageBackend.Services
         {
             _jwt = options.Value;
         }
-        public string GenerateToken(List<Claim> claims)
+        public string GenerateAccessToken(List<Claim> claims)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -29,6 +30,14 @@ namespace BeverageBackend.Services
                 );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }

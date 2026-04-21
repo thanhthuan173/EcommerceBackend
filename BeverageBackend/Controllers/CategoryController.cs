@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BeverageBackend.Controllers
 {
+    [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
     [Authorize(Roles ="ADMIN")]

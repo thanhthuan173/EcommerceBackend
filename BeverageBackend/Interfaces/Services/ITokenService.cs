@@ -4,6 +4,7 @@ namespace BeverageBackend.Interfaces.Services
 {
     public interface ITokenService
     {
-        string GenerateToken(List<Claim> claims);
+        string GenerateAccessToken(List<Claim> claims);
+        string GenerateRefreshToken();
     }
 }

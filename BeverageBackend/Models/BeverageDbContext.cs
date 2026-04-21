@@ -14,6 +14,7 @@ namespace BeverageBackend.Models
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public BeverageDbContext(DbContextOptions<BeverageDbContext> options) : base(options)
         {
@@ -54,6 +55,13 @@ namespace BeverageBackend.Models
                 entity.HasKey(ur => new { ur.UserId, ur.RoleId });
                 entity.HasOne(u => u.User).WithMany(ur => ur.UserRoles).HasForeignKey(u => u.UserId);
                 entity.HasOne(r => r.Role).WithMany(ur => ur.UserRoles).HasForeignKey(r => r.RoleId);
+            });
+
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.HasKey(rt => rt.Id);
+                entity.HasOne(rt => rt.User).WithMany(u => u.RefreshTokens).HasForeignKey(rt => rt.UserId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(rt => rt.Token).IsUnique();
             });
         }
     }

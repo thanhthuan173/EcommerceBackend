@@ -2,10 +2,12 @@
 using BeverageBackend.Dto;
 using BeverageBackend.Interfaces;
 using BeverageBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeverageBackend.Controllers
-{ 
+{
+    [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
     public class ProductController:ControllerBase
@@ -21,6 +23,7 @@ namespace BeverageBackend.Controllers
             _mapper = mapper;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetAllProduct()
         {

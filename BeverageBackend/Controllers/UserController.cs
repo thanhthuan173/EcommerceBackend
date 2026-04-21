@@ -2,11 +2,13 @@
 using BeverageBackend.Dto;
 using BeverageBackend.Interfaces;
 using BeverageBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeverageBackend.Controllers
 {
+    [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
     public class UserController:ControllerBase

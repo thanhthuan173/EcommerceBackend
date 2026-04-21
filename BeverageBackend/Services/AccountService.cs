@@ -37,7 +37,7 @@ namespace BeverageBackend.Services
             _context = context;
         }
 
-        public async Task<string> Login(LoginDto dto)
+        public async Task<TokenDto> Login(LoginDto dto)
         {
             var user = await _user.GetByUsernameOrEmailAsync(dto.Account);
             if (user == null)
@@ -58,8 +58,68 @@ namespace BeverageBackend.Services
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
-            var token = _tokenService.GenerateToken(claims);
-            return token;
+            var accessToken = _tokenService.GenerateAccessToken(claims);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+            var refreshEntity = new RefreshToken()
+            {
+                Token = refreshToken,
+                UserId = user.Id,
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                IsRevoked = false
+            };
+            _context.RefreshTokens.Add(refreshEntity);
+            await _context.SaveChangesAsync();
+            return new TokenDto()
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+        }
+
+        public async Task Logout(RefreshTokenDto dto)
+        {
+            var token = await _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == dto.RefreshToken);
+            if (token != null)
+            {
+                token.IsRevoked = true;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<TokenDto> RefreshToken(RefreshTokenDto dto)
+        {
+            var oldRefreshTokenEntity = await _context.RefreshTokens.Include(rt => rt.User).FirstOrDefaultAsync(rt => rt.Token == dto.RefreshToken);
+            if (oldRefreshTokenEntity == null || oldRefreshTokenEntity.IsRevoked == true || oldRefreshTokenEntity.ExpiresAt < DateTime.UtcNow)
+                throw new Exception("Invalid refresh token");
+            var user = oldRefreshTokenEntity.User;
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
+                new Claim(ClaimTypes.Name,user.Username),
+                new Claim(ClaimTypes.Email,user.Email)
+            };
+            var roles = await _userRole.GetRoleNameByUserAsync(user.Id);
+            foreach(var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            var accessToken = _tokenService.GenerateAccessToken(claims);
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+            oldRefreshTokenEntity.IsRevoked = true;
+            var newRefreshTokenEntity = new RefreshToken()
+            {
+                Token = newRefreshToken,
+                UserId = oldRefreshTokenEntity.UserId,
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                IsRevoked = false
+            };
+            _context.RefreshTokens.Add(newRefreshTokenEntity);
+            await _context.SaveChangesAsync();
+            return new TokenDto()
+            {
+                AccessToken= accessToken,
+                RefreshToken= newRefreshToken
+            };
         }
 
         public async Task Register(RegisterDto dto)

@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using BeverageBackend.Dto;
 using BeverageBackend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BeverageBackend.Controllers
 {
+    [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
     public class OrderController:ControllerBase

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BeverageBackend.Controllers
 {
+    [Authorize(Roles ="ADMIN")]
     [ApiController]
     [Route("api/[Controller]")]
     public class RoleController : Controller

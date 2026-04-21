@@ -3,10 +3,12 @@ using BeverageBackend.Dto;
 using BeverageBackend.Dto.Cart;
 using BeverageBackend.Interfaces;
 using BeverageBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeverageBackend.Controllers
 {
+    [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
     public class CartController:ControllerBase
