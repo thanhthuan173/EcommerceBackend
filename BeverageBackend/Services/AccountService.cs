@@ -121,7 +121,7 @@ namespace BeverageBackend.Services
             {
                 Token = newRefreshToken,
                 UserId = oldRefreshTokenEntity.UserId,
-                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                ExpiresAt = _tokenService.GetRefreshTokenExpiry(),
                 IsRevoked = false,
                 IsUsed=false
             };

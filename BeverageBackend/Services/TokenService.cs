@@ -29,7 +29,7 @@ namespace BeverageBackend.Services
                 issuer: _jwt.Issuer,
                 audience: _jwt.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.UtcNow.AddMinutes(_jwt.AccessTokenMinutes),
                 signingCredentials: cred
                 );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
@@ -42,6 +42,11 @@ namespace BeverageBackend.Services
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
+        }
+
+        public DateTime GetRefreshTokenExpiry()
+        {
+            return DateTime.UtcNow.AddDays(_jwt.RefreshTokenDays);
         }
 
         public async Task RevokeAllUserTokens(int userId)
