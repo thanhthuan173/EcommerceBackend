@@ -119,6 +119,9 @@ JWT-based authentication:
 
 ## 🗄️ Database Design
 
+![Database Design](./BeverageBackend/Imgs/Db.png)
+> Entity Relationship Diagram
+
 ### Entities
 
 - User  
