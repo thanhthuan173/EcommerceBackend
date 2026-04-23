@@ -89,8 +89,20 @@ namespace BeverageBackend.Services
         public async Task<TokenDto> RefreshToken(RefreshTokenDto dto)
         {
             var oldRefreshTokenEntity = await _context.RefreshTokens.Include(rt => rt.User).FirstOrDefaultAsync(rt => rt.Token == dto.RefreshToken);
-            if (oldRefreshTokenEntity == null || oldRefreshTokenEntity.IsRevoked == true || oldRefreshTokenEntity.ExpiresAt < DateTime.UtcNow)
+            if (oldRefreshTokenEntity == null)
                 throw new Exception("Invalid refresh token");
+            if (oldRefreshTokenEntity.IsUsed)
+            {
+                await _tokenService.RevokeAllUserTokens(oldRefreshTokenEntity.UserId);
+                throw new Exception("Reuse detected");
+            }
+            if (oldRefreshTokenEntity.ExpiresAt<DateTime.UtcNow)
+                throw new Exception("Refresh token expired");
+            //logout,change password, admin revoke,revoke all user
+            if (oldRefreshTokenEntity.IsRevoked)
+                throw new Exception("Invalid refresh token");
+            oldRefreshTokenEntity.IsRevoked = true;
+            oldRefreshTokenEntity.IsUsed = true;
             var user = oldRefreshTokenEntity.User;
             var claims = new List<Claim>()
             {
@@ -105,13 +117,13 @@ namespace BeverageBackend.Services
             }
             var accessToken = _tokenService.GenerateAccessToken(claims);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
-            oldRefreshTokenEntity.IsRevoked = true;
             var newRefreshTokenEntity = new RefreshToken()
             {
                 Token = newRefreshToken,
                 UserId = oldRefreshTokenEntity.UserId,
                 ExpiresAt = DateTime.UtcNow.AddDays(7),
-                IsRevoked = false
+                IsRevoked = false,
+                IsUsed=false
             };
             _context.RefreshTokens.Add(newRefreshTokenEntity);
             await _context.SaveChangesAsync();

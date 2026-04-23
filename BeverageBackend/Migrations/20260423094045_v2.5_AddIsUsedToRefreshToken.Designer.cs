@@ -4,6 +4,7 @@ using BeverageBackend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeverageBackend.Migrations
 {
     [DbContext(typeof(BeverageDbContext))]
-    partial class BeverageDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260423094045_v2.5_AddIsUsedToRefreshToken")]
+    partial class v25_AddIsUsedToRefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

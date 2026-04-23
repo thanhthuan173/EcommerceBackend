@@ -1,5 +1,7 @@
 ﻿using BeverageBackend.Configuration;
 using BeverageBackend.Interfaces.Services;
+using BeverageBackend.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,10 +14,12 @@ namespace BeverageBackend.Services
     public class TokenService : ITokenService
     {
         private readonly JwtOptions _jwt;
+        private readonly BeverageDbContext _context;
 
-        public TokenService(IOptions<JwtOptions> options)
+        public TokenService(IOptions<JwtOptions> options,BeverageDbContext context)
         {
             _jwt = options.Value;
+            _context = context;
         }
         public string GenerateAccessToken(List<Claim> claims)
         {
@@ -38,6 +42,15 @@ namespace BeverageBackend.Services
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
+        }
+
+        public async Task RevokeAllUserTokens(int userId)
+        {
+            var userTokens = await _context.RefreshTokens.Where(rt => rt.UserId == userId).ToListAsync();
+            foreach(var token in userTokens)
+            {
+                token.IsRevoked = true;
+            }
         }
     }
 }

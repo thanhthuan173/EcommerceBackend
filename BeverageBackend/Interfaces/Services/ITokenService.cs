@@ -6,5 +6,6 @@ namespace BeverageBackend.Interfaces.Services
     {
         string GenerateAccessToken(List<Claim> claims);
         string GenerateRefreshToken();
+        Task RevokeAllUserTokens(int userId);
     }
 }
