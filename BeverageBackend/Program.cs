@@ -1,10 +1,10 @@
-using BeverageBackend;
-using BeverageBackend.Configuration;
-using BeverageBackend.Interfaces;
-using BeverageBackend.Interfaces.Services;
-using BeverageBackend.Models;
-using BeverageBackend.Repository;
-using BeverageBackend.Services;
+using BeverageBackend.API.Configurations;
+using BeverageBackend.Application.Interfaces;
+using BeverageBackend.Application.Interfaces.Services;
+using BeverageBackend.Application.Services;
+using BeverageBackend.Application.Services.Auth;
+using BeverageBackend.Infrastructure.Persistence;
+using BeverageBackend.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
