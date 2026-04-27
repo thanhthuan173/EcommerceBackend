@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BeverageBackend.Application.Dto;
+using BeverageBackend.Application.Dto.Product;
 using BeverageBackend.Application.Interfaces;
 using BeverageBackend.Domain.Models;
 using Microsoft.AspNetCore.Authorization;

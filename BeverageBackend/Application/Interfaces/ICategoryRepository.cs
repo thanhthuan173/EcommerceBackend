@@ -4,15 +4,17 @@ namespace BeverageBackend.Application.Interfaces
 {
     public interface ICategoryRepository
     {
-        ICollection<Category> GetCategories();
-        Category GetCategory(int id);
-        ICollection<Product> GetProductsByCategory(int id);
-        Category GetCategoryByProduct(int prodId);
-        bool CategoryExists(int id);
-        bool CreateCategory(Category category);
-        bool UpdateCategory(Category category);
-        bool Save();
-        bool DeleteCategory(int id);
-        bool IsRemovable(int id);
+        Task<IEnumerable<Category>> GetAllAsync();
+        Task<Category?> GetByIdAsync(int id);
+        Task<Category?> GetByNameAsync(string name);
+
+        Task<Category?> GetWithProductsAsync(int id);
+
+        void Add(Category category);
+        void Update(Category category);
+        void Delete(Category category);
+
+        Task<bool> ExistsAsync(int id);
+        Task SaveChangesAsync();
     }
 }

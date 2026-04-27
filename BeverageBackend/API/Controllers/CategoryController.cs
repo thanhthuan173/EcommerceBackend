@@ -1,109 +1,65 @@
 ﻿using AutoMapper;
 using BeverageBackend.Application.Dto;
+using BeverageBackend.Application.Dto.Product;
 using BeverageBackend.Application.Interfaces;
+using BeverageBackend.Application.Interfaces.Services;
 using BeverageBackend.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace BeverageBackend.API.Controllers
 {
-    [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
-    [Authorize(Roles ="ADMIN")]
     public class CategoryController:ControllerBase
     {
-        private ICategoryRepository _category;
-        private IMapper _mapper;
+        private readonly ICategoryService _service;
 
-        public CategoryController(ICategoryRepository category,IMapper mapper)
+        public CategoryController(ICategoryService service)
         {
-            _category = category;
-            _mapper = mapper;
+            _service = service;
         }
 
         [HttpGet]
-        public IActionResult GetAllCategories()
+        public async Task<IActionResult> GetAll()
         {
-            var cates = _mapper.Map<List<CategoryDto>>(_category.GetCategories());
-            return StatusCode(200, cates);
+            return Ok(await _service.GetAllAsync());
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCategoryById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            if (!_category.CategoryExists(id))
-                return StatusCode(404,"Khong tim thay category");
-            var cate = _mapper.Map<CategoryDto>(_category.GetCategory(id));
-            return StatusCode(200, cate);
+            return Ok(await _service.GetByIdAsync(id));
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}/products")]
-        public IActionResult GetAllProductByCateId(int id)
+        public async Task<IActionResult> GetCategoryWithProducts(int id)
         {
-            if (!_category.CategoryExists(id))
-                return NotFound();
-            var prods = _mapper.Map<List<ProductDto>>(_category.GetProductsByCategory(id));
-            return Ok(prods);
-        }
-
-        [HttpGet("{prodId}/category")]
-        public IActionResult GetCategoryByProductId(int prodId)
-        {
-            return Ok(_category.GetCategoryByProduct(prodId));
+            return Ok(await _service.GetCategoryWithProductsAsync(id));
         }
 
         [HttpPost]
-        public IActionResult CreateCategory([FromBody] CategoryDto categoryDto)
+        public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto dto)
         {
-            var category = _category.GetCategories().Where(c => c.Name.Trim().ToUpper() == categoryDto.Name.TrimEnd().ToUpper()).FirstOrDefault();
-            if (category != null)
-            {
-                ModelState.AddModelError("Name", "Category already exits");
-                return BadRequest(ModelState);
-            }
-            var categoryMap = _mapper.Map<Category>(categoryDto);
-            if (!_category.CreateCategory(categoryMap))
-            {
-                return StatusCode(500, "Error while saving");
-            }
-            return Ok("Create Successfully");
+            var result = await _service.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateCategory([FromRoute]int id, [FromBody] UpdateCategoryDto updateCategoryDto)
+        public async Task<IActionResult> UpdateCategory([FromRoute]int id, [FromBody] UpdateCategoryDto dto)
         {
-            var category = _category.GetCategory(id);
-            if (category == null)
-                return NotFound();
-            var newName = updateCategoryDto.Name.Trim();
-            if (category.Name == newName)
-                return NoContent();
-            category.Name = newName;
-            if (!_category.UpdateCategory(category))
-            {
-                ModelState.AddModelError("","Error while saving");
-                return BadRequest(ModelState);
-            }
+            await _service.UpdateAsync(id, dto);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCategory(int id)
+        public async Task<IActionResult> DeleteCategory(int id)
         {
-            if (!_category.CategoryExists(id))
-                return NotFound();
-            if (_category.IsRemovable(id))
-            {
-                ModelState.AddModelError("Category", "Can't delete this category because it has associated products");
-                return BadRequest(ModelState);
-            }
-            if (!_category.DeleteCategory(id))
-            {
-                return StatusCode(500, "Error while saving");
-            }
-            return Ok("Delete successfully");
+            await _service.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BeverageBackend.Application.Interfaces;
 using BeverageBackend.Domain.Models;
 using BeverageBackend.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeverageBackend.Infrastructure.Repository
 {
@@ -13,59 +14,49 @@ namespace BeverageBackend.Infrastructure.Repository
             _context = context;
         }
 
-        public bool CategoryExists(int id)
+        public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return _context.Categories.Any(c => c.Id == id);
+            return await _context.Categories.ToListAsync();
         }
 
-        public bool CreateCategory(Category category)
+        public async Task<Category?> GetByIdAsync(int id)
         {
-            _context.Add(category);
-            return Save();
+            return await _context.Categories.FirstOrDefaultAsync(c=>c.Id==id);
         }
 
-        public bool DeleteCategory(int id)
+        public async Task<Category?> GetByNameAsync(string name)
         {
-            _context.Categories.Remove(GetCategory(id));
-            return Save();
+            return await _context.Categories.FirstOrDefaultAsync(c => c.Name == name);
         }
 
-        public ICollection<Category> GetCategories()
+        public async Task<Category?> GetWithProductsAsync(int id)
         {
-            return _context.Categories.OrderBy(c => c.Id).ToList();
+            return await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public Category GetCategory(int id)
+        public void Add(Category category)
         {
-            return _context.Categories.Where(c => c.Id == id).FirstOrDefault();
+            _context.Categories.Add(category);
         }
 
-        public Category GetCategoryByProduct(int prodId)
-        {
-            return _context.Products.Where(p => p.Id == prodId).Select(p => p.Category).FirstOrDefault();
-        }
-
-        public ICollection<Product> GetProductsByCategory(int id)
-        {
-            var p = _context.Products.Where(p => p.CategoryId == id).ToList();
-            return p;
-        }
-
-        public bool IsRemovable(int id)
-        {
-            return _context.Products.Any(p => p.CategoryId == id);
-        }
-
-        public bool Save()
-        {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
-        }
-
-        public bool UpdateCategory(Category category)
+        public void Update(Category category)
         {
             _context.Categories.Update(category);
-            return Save();
+        }
+
+        public void Delete(Category category)
+        {
+            _context.Categories.Remove(category);
+        }
+
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Categories.AnyAsync(c => c.Id == id);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }
