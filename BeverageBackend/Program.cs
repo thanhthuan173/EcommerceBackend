@@ -1,4 +1,5 @@
 using BeverageBackend.API.Configurations;
+using BeverageBackend.API.Middlewares;
 using BeverageBackend.Application.Interfaces;
 using BeverageBackend.Application.Interfaces.Services;
 using BeverageBackend.Application.Services;
@@ -76,6 +77,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

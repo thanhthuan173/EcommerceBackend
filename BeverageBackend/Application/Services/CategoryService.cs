@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BeverageBackend.Application.Dto;
 using BeverageBackend.Application.Dto.Product;
+using BeverageBackend.Application.Exceptions;
 using BeverageBackend.Application.Interfaces;
 using BeverageBackend.Application.Interfaces.Services;
 using BeverageBackend.Domain.Models;
@@ -28,7 +29,7 @@ namespace BeverageBackend.Application.Services
         {
             var category = await _repo.GetByIdAsync(id);
             if (category == null)
-                throw new Exception("Not found");
+                throw new NotFoundException("Category not found");
             return _mapper.Map<CategoryDto>(category);
         }
 
@@ -36,7 +37,7 @@ namespace BeverageBackend.Application.Services
         {
             var category = await _repo.GetWithProductsAsync(id);
             if (category == null)
-                throw new Exception("Not found");
+                throw new NotFoundException("Category not found");
             return _mapper.Map<CategoryWithProductsDto>(category);
         }
 
@@ -45,7 +46,7 @@ namespace BeverageBackend.Application.Services
             var normalizedName = dto.Name.Trim().ToUpper();
             var category = await _repo.GetByNameAsync(normalizedName);
             if (category != null)
-                throw new InvalidOperationException("Category already existed");
+                throw new AlreadyExistsException("Category already existed");
             var entity = _mapper.Map<Category>(dto);
             entity.Name = normalizedName;
             _repo.Add(entity);
@@ -58,10 +59,10 @@ namespace BeverageBackend.Application.Services
             var normalizedName = dto.Name.Trim().ToUpper();
             var category = await _repo.GetByIdAsync(id);
             if (category == null)
-                throw new Exception("Not found");
+                throw new NotFoundException("Category not found");
             var cateName = await _repo.GetByNameAsync(normalizedName);
             if (cateName != null && cateName.Id != id)
-                throw new Exception("Category already existed");
+                throw new AlreadyExistsException("Category already existed");
             category.Name = normalizedName;
             _repo.Update(category);
             await _repo.SaveChangesAsync();
@@ -71,9 +72,9 @@ namespace BeverageBackend.Application.Services
         {
             var category = await _repo.GetWithProductsAsync(id);
             if (category == null)
-                throw new Exception("Not found");
+                throw new NotFoundException("Category not found");
             if (category.Products.Any())
-                throw new Exception("Can't delete because of having products");
+                throw new HasAssociatedException("Category is in use");
             _repo.Delete(category);
             await _repo.SaveChangesAsync();
         }

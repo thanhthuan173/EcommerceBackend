@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="API\Middlewares\" />
     <Folder Include="Application\Validators\" />
   </ItemGroup>
 
