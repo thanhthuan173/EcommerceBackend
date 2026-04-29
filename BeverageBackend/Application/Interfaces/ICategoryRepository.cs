@@ -1,10 +1,12 @@
-﻿using BeverageBackend.Domain.Models;
+﻿using BeverageBackend.Application.Common;
+using BeverageBackend.Application.Common.Query;
+using BeverageBackend.Domain.Models;
 
 namespace BeverageBackend.Application.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<Category>> GetAllAsync();
+        Task<PagedResult<Category>> GetAllAsync(CategoryQueryParameters query);
         Task<Category?> GetByIdAsync(int id);
         Task<Category?> GetByNameAsync(string name);
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BeverageBackend.Application.Common.Query;
 using BeverageBackend.Application.Dto;
 using BeverageBackend.Application.Dto.Product;
 using BeverageBackend.Application.Interfaces;
@@ -23,9 +24,17 @@ namespace BeverageBackend.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] CategoryQueryParameters query)
         {
-            return Ok(await _service.GetAllAsync());
+            var result = await _service.GetAllAsync(query);
+            return Ok(new 
+            {
+                result.Items,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalCount,
+                result.TotalPages
+            });
         }
 
         [HttpGet("{id}")]

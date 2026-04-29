@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using BeverageBackend.Application.Common;
+using BeverageBackend.Application.Common.Query;
 using BeverageBackend.Application.Dto;
 using BeverageBackend.Application.Dto.Product;
 using BeverageBackend.Application.Exceptions;
@@ -19,10 +21,14 @@ namespace BeverageBackend.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<CategoryDto>> GetAllAsync()
+        public async Task<PagedResult<CategoryDto>> GetAllAsync(CategoryQueryParameters query)
         {
-            var categories = _mapper.Map<IEnumerable<CategoryDto>>(await _repo.GetAllAsync());
-            return categories;
+            var result = await _repo.GetAllAsync(query);
+            return new PagedResult<CategoryDto>(
+                _mapper.Map<List<CategoryDto>>(result.Items),
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize); 
         }
 
         public async Task<CategoryDto> GetByIdAsync(int id)

@@ -1,11 +1,13 @@
-﻿using BeverageBackend.Application.Dto;
+﻿using BeverageBackend.Application.Common;
+using BeverageBackend.Application.Common.Query;
+using BeverageBackend.Application.Dto;
 using BeverageBackend.Application.Dto.Product;
 
 namespace BeverageBackend.Application.Interfaces.Services
 {
     public interface ICategoryService
     {
-        Task<IEnumerable<CategoryDto>> GetAllAsync();
+        Task<PagedResult<CategoryDto>> GetAllAsync(CategoryQueryParameters query);
         Task<CategoryDto> GetByIdAsync(int id);
 
         Task<CategoryWithProductsDto> GetCategoryWithProductsAsync(int id);

@@ -1,7 +1,10 @@
-﻿using BeverageBackend.Application.Interfaces;
+﻿using BeverageBackend.Application.Common;
+using BeverageBackend.Application.Common.Query;
+using BeverageBackend.Application.Interfaces;
 using BeverageBackend.Domain.Models;
 using BeverageBackend.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BeverageBackend.Infrastructure.Repository
 {
@@ -14,9 +17,31 @@ namespace BeverageBackend.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync()
+        public async Task<PagedResult<Category>> GetAllAsync(CategoryQueryParameters query)
         {
-            return await _context.Categories.ToListAsync();
+            var categories = _context.Categories.AsQueryable();
+
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                categories = categories.Where(c => c.Name.ToLower().Contains(query.Name.ToLower()));
+            }
+
+            switch (query.SortBy?.ToLower())
+            {
+                case "name":
+                    categories = query.Desc ? categories.OrderByDescending(c => c.Name) : categories.OrderBy(c => c.Name);
+                    break;
+                default:
+                    categories = categories.OrderBy(c => c.Id);
+                    break;
+            }
+
+            var totalCount = await categories.CountAsync();
+            var items = await categories
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .ToListAsync();
+            return new PagedResult<Category>(items, totalCount, query.PageNumber, query.PageSize);
         }
 
         public async Task<Category?> GetByIdAsync(int id)
