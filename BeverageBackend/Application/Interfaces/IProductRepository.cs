@@ -4,13 +4,15 @@ namespace BeverageBackend.Application.Interfaces
 {
     public interface IProductRepository
     {
-        ICollection<Product> GetProducts();
-        Product GetProduct(int id);
-        Product GetProduct(string name);
-        int CountOrders(int prodId);
-        int CountCarts(int prodId);
-        bool ProductExists(int id);
-        bool CreateProduct(Product product);
-        bool Save();
+        Task<IEnumerable<Product>> GetAllAsync();
+        Task<Product?> GetByIdAsync(int id);
+
+        Task<Product?> IsNameExistsAsync(string prodName, int cateId);
+
+        void Add(Product product);
+        void Delete(Product product);
+
+        Task<bool> ExistsAsync(int id);
+        Task SaveChangesAsync();
     }
 }

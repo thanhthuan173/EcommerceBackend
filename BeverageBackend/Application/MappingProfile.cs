@@ -14,6 +14,8 @@ namespace BeverageBackend.Application
             //product
             CreateMap<Product, ProductDto>();
             CreateMap<ProductDto, Product>();
+            CreateMap<CreateProductDto, Product>();
+            CreateMap<UpdateProductDto, Product>();
 
             //category
             CreateMap<Category, CategoryDto>();

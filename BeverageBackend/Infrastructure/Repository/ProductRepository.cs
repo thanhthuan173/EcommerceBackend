@@ -1,6 +1,7 @@
 ﻿using BeverageBackend.Application.Interfaces;
 using BeverageBackend.Domain.Models;
 using BeverageBackend.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeverageBackend.Infrastructure.Repository
 {
@@ -12,51 +13,39 @@ namespace BeverageBackend.Infrastructure.Repository
             _context = context;
         }
 
-        public Product GetProduct(int id)
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return _context.Products.Where(p => p.Id == id).FirstOrDefault();
+            return await _context.Products.Include(p=>p.Category).ToListAsync();
         }
 
-        public Product GetProduct(string name)
+        public async Task<Product?> GetByIdAsync(int id)
         {
-            var qr = from prod in _context.Products
-                     where prod.Name.Equals(name)
-                     select prod;
-            return qr.FirstOrDefault();
+            return await _context.Products.Include(p=>p.Category).FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public ICollection<Product> GetProducts()
+        public async Task<Product?> IsNameExistsAsync(string prodName, int cateId)
         {
-            return _context.Products.ToList();
+            return await _context.Products.FirstOrDefaultAsync(p => p.Name.ToLower() == prodName.ToLower() && p.CategoryId == cateId);
         }
 
-        public bool ProductExists(int id)
-        {
-            return _context.Products.Any(p => p.Id==id);
-        }
-
-        public int CountOrders(int prodId)
-        {
-            var order = _context.OrderItems.Where(oi => oi.ProductId == prodId);
-            return order.Count();
-        }
-
-        public int CountCarts(int prodId)
-        {
-            var carts = _context.CartItems.Where(ci => ci.ProductId == prodId);
-            return carts.Count();
-        }
-
-        public bool CreateProduct(Product product)
+        public void Add(Product product)
         {
             _context.Products.Add(product);
-            return Save();
         }
 
-        public bool Save()
+        public void Delete(Product product)
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            _context.Products.Remove(product);
+        }
+
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Products.AnyAsync(p => p.Id == id);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

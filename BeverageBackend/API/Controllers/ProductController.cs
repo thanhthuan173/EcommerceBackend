@@ -1,99 +1,62 @@
 ﻿using AutoMapper;
 using BeverageBackend.Application.Dto.Product;
 using BeverageBackend.Application.Interfaces;
+using BeverageBackend.Application.Interfaces.Services;
 using BeverageBackend.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace BeverageBackend.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[Controller]")]
     [ApiController]
     public class ProductController:ControllerBase
     {
-        private readonly IProductRepository _product;
+        private readonly IProductService _service;
         private readonly ICategoryRepository _category;
         private readonly IMapper _mapper;
 
-        public ProductController(IProductRepository productRepository,IMapper mapper,ICategoryRepository category)
+        public ProductController(IProductService service,IMapper mapper,ICategoryRepository category)
         {
-            _product = productRepository;
+            _service = service;
             _category = category;
             _mapper = mapper;
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpGet]
-        public IActionResult GetAllProduct()
+        public async Task<IActionResult> GetAll()
         {
-            var prod = _mapper.Map<List<ProductDto>>(_product.GetProducts().ToList());
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            return Ok(prod);
+            return Ok(await _service.GetAllAsync());
         }
 
-        [HttpGet("{id:int}")]
-        public IActionResult GetProductById(int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            if (!_product.ProductExists(id))
-                return NotFound();
-            var prod = _mapper.Map<ProductDto>(_product.GetProduct(id));
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            return Ok(prod);
-        }
-
-        [HttpGet("{name}")]
-        public IActionResult GetProductByName(string name)
-        {
-            var prod = _mapper.Map<ProductDto>(_product.GetProduct(name));
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            return Ok(prod);
-        }
-
-        [HttpGet("{prodId}/count_orders")]
-        public IActionResult ProductOrders(int prodId)
-        {
-            if (!_product.ProductExists(prodId))
-                return NotFound();
-            return Ok(_product.CountOrders(prodId));
-        }
-
-        [HttpGet("{prodId}/count_carts")]
-        public IActionResult ProductCarts(int prodId)
-        {
-            if (!_product.ProductExists(prodId))
-                return NotFound();
-            return Ok(_product.CountCarts(prodId));
+            return Ok(await _service.GetById(id));
         }
 
         [HttpPost]
-        public IActionResult CreateProduct([FromBody] ProductDto productDto)
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto dto)
         {
-            var product = _product.GetProducts().Where(p => p.Name == productDto.Name&&p.CategoryId==productDto.CategoryId).FirstOrDefault();
-            if (product != null)
-            {
-                ModelState.AddModelError("Name","Product already exist");
-                return BadRequest(ModelState);
-            }
-            if (!_category.CategoryExists(productDto.CategoryId))
-            {
-                return NotFound();
-            }
-            var prodMap = _mapper.Map<Product>(productDto);
-            if (!_product.CreateProduct(prodMap))
-            {
-                return StatusCode(500, "Error while saving");
-            }
-            return Ok("Create successfully");
+            var product = await _service.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetById),new {id=product.Id},product);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct([FromRoute]int id, [FromBody]UpdateProductDto dto)
+        {
+            await _service.UpdateAsync(id, dto);
+            return Ok("Update successfully");
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePoduct(int id)
+        {
+            await _service.DeleteAsync(id);
+            return NoContent();
         }
     }
 }
