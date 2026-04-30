@@ -10,19 +10,19 @@ namespace BeverageBackend.Application.Services
     public class UserRoleService:IUserRoleService
     {
         private readonly IUserRoleRepository _repo;
-        private readonly BeverageDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserRoleService(IUserRoleRepository repo,BeverageDbContext context)
+        public UserRoleService(IUserRoleRepository repo, IUnitOfWork unitOfWork)
         {
             _repo = repo;
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task AddAsync(UserRole userRole)
         {
             
             _repo.Add(userRole);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<List<UserRoleDto>> GetUserRolesAsync()
@@ -51,7 +51,7 @@ namespace BeverageBackend.Application.Services
             if (userRole == null)
                 return;
             _repo.Delete(userRole);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

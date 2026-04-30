@@ -9,23 +9,19 @@ using System.Threading.Tasks;
 
 namespace BeverageBackend.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
     public class ProductController:ControllerBase
     {
         private readonly IProductService _service;
-        private readonly ICategoryRepository _category;
-        private readonly IMapper _mapper;
 
-        public ProductController(IProductService service,IMapper mapper,ICategoryRepository category)
+        public ProductController(IProductService service)
         {
             _service = service;
-            _category = category;
-            _mapper = mapper;
         }
 
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

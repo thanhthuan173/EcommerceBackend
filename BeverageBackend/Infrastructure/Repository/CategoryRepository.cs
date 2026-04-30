@@ -78,10 +78,5 @@ namespace BeverageBackend.Infrastructure.Repository
         {
             return await _context.Categories.AnyAsync(c => c.Id == id);
         }
-
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
     }
 }

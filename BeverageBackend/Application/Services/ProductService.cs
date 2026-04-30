@@ -11,12 +11,14 @@ namespace BeverageBackend.Application.Services
     {
         private readonly IProductRepository _repo;
         private readonly ICategoryRepository _cateRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository repo,ICategoryRepository cateRepo, IMapper mapper)
+        public ProductService(IProductRepository repo,ICategoryRepository cateRepo, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _repo = repo;
             _cateRepo = cateRepo;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -42,7 +44,7 @@ namespace BeverageBackend.Application.Services
                 throw new NotFoundException("Category not found");
             var entity = _mapper.Map<Product>(dto);
             _repo.Add(entity);
-            await _repo.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<ProductDto>(entity);
         }
 
@@ -51,11 +53,13 @@ namespace BeverageBackend.Application.Services
             var product = await _repo.GetByIdAsync(id);
             if (product == null)
                 throw new NotFoundException("Product not found");
+            if (!await _cateRepo.ExistsAsync(dto.CategoryId))
+                throw new NotFoundException("Category not found");
             var isExisted = await _repo.IsNameExistsAsync(dto.Name, dto.CategoryId);
             if (isExisted != null && isExisted.Id != id)
                 throw new AlreadyExistsException("Product name already exists in this category");
             _mapper.Map(dto,product);
-            await _repo.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
@@ -64,7 +68,7 @@ namespace BeverageBackend.Application.Services
             if (product == null)
                 throw new NotFoundException("Product not found");
             _repo.Delete(product);
-            await _repo.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

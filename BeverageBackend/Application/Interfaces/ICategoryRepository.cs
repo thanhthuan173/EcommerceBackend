@@ -17,6 +17,5 @@ namespace BeverageBackend.Application.Interfaces
         void Delete(Category category);
 
         Task<bool> ExistsAsync(int id);
-        Task SaveChangesAsync();
     }
 }

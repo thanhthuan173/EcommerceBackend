@@ -13,11 +13,13 @@ namespace BeverageBackend.Application.Services
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _repo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public CategoryService(ICategoryRepository repo,IMapper mapper)
+        public CategoryService(ICategoryRepository repo, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _repo = repo;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -56,7 +58,7 @@ namespace BeverageBackend.Application.Services
             var entity = _mapper.Map<Category>(dto);
             entity.Name = normalizedName;
             _repo.Add(entity);
-            await _repo.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<CategoryDto>(entity);
         }
 
@@ -71,7 +73,7 @@ namespace BeverageBackend.Application.Services
                 throw new AlreadyExistsException("Category already existed");
             category.Name = normalizedName;
             _repo.Update(category);
-            await _repo.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
@@ -82,7 +84,7 @@ namespace BeverageBackend.Application.Services
             if (category.Products.Any())
                 throw new HasAssociatedException("Category is in use");
             _repo.Delete(category);
-            await _repo.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
