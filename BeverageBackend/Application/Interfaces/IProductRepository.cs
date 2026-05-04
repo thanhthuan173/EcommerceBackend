@@ -1,10 +1,12 @@
-﻿using BeverageBackend.Domain.Models;
+﻿using BeverageBackend.Application.Common;
+using BeverageBackend.Application.Common.Query;
+using BeverageBackend.Domain.Models;
 
 namespace BeverageBackend.Application.Interfaces
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<Product>> GetAllAsync();
+        Task<PagedResult<Product>> GetAllAsync(ProductQueryParameters query);
         Task<Product?> GetByIdAsync(int id);
 
         Task<Product?> IsNameExistsAsync(string prodName, int cateId);

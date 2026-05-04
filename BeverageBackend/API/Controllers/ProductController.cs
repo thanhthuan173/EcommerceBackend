@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BeverageBackend.Application.Common.Query;
 using BeverageBackend.Application.Dto.Product;
 using BeverageBackend.Application.Interfaces;
 using BeverageBackend.Application.Interfaces.Services;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BeverageBackend.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[Controller]")]
     [ApiController]
     public class ProductController:ControllerBase
@@ -23,9 +24,17 @@ namespace BeverageBackend.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] ProductQueryParameters query)
         {
-            return Ok(await _service.GetAllAsync());
+            var result = await _service.GetAllAsync(query);
+            return Ok(new
+            {
+                result.Items,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalCount,
+                result.TotalPages
+            });
         }
 
         [HttpGet("{id}")]

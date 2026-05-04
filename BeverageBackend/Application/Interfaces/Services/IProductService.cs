@@ -1,10 +1,12 @@
-﻿using BeverageBackend.Application.Dto.Product;
+﻿using BeverageBackend.Application.Common;
+using BeverageBackend.Application.Common.Query;
+using BeverageBackend.Application.Dto.Product;
 
 namespace BeverageBackend.Application.Interfaces.Services
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductDto>> GetAllAsync();
+        Task<PagedResult<ProductDto>> GetAllAsync(ProductQueryParameters query);
         Task<ProductDto> GetById(int id);
 
         Task<ProductDto> CreateAsync(CreateProductDto dto);
