@@ -1,5 +1,6 @@
 using BeverageBackend.API.Configurations;
 using BeverageBackend.API.Middlewares;
+using BeverageBackend.API.Services;
 using BeverageBackend.Application.Interfaces;
 using BeverageBackend.Application.Interfaces.Services;
 using BeverageBackend.Application.Services;
@@ -34,8 +35,10 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
