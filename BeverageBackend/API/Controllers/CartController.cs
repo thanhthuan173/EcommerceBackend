@@ -2,9 +2,11 @@
 using BeverageBackend.Application.Dto;
 using BeverageBackend.Application.Dto.Cart;
 using BeverageBackend.Application.Interfaces;
+using BeverageBackend.Application.Interfaces.Services;
 using BeverageBackend.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace BeverageBackend.API.Controllers
 {
@@ -13,102 +15,37 @@ namespace BeverageBackend.API.Controllers
     [ApiController]
     public class CartController:ControllerBase
     {
-        private readonly ICartRepository _cart;
-        private readonly IProductRepository _product;
-        private readonly IMapper _mapper;
+        private readonly ICartService _service;
 
-        public CartController(ICartRepository cart,IProductRepository product,IMapper mapper)
+        public CartController(ICartService service)
         {
-            _cart = cart;
-            _product = product;
-            _mapper = mapper;
+            _service = service;
         }
 
         [HttpGet]
-        public IActionResult GetAllCarts()
+        public async Task<IActionResult> GetCart()
         {
-            var carts = _mapper.Map<List<CartDto>>(_cart.GetCarts());
-            return Ok(carts);
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetCart(int id)
-        {
-            if (!_cart.CartExists(id))
-                return NotFound();
-            var cart = _mapper.Map<CartDto>(_cart.GetCart(id));
-            return Ok(cart);
-        }
-
-        [HttpGet("{cartId}/user")]
-        public IActionResult GetUserByCartId(int cartId)
-        {
-            if (!_cart.CartExists(cartId))
-                return NotFound();
-            var cus = _mapper.Map<UserDto>(_cart.GetUserByCartId(cartId));
-            return Ok(cus);
+            return Ok(await _service.GetCartAsync());
         }
 
         [HttpPost]
-        public IActionResult AddItemToCart([FromBody]AddCartItemDto cartItemDto)
+        public async Task<IActionResult> AddToCart(AddCartItemDto dto)
         {
-            var cartItems = _cart.GetCartItems(cartItemDto.CartId);
-            var cartItem = cartItems.Where(ci => ci.ProductId == cartItemDto.ProductId).FirstOrDefault();
-            if (cartItem != null)
-            {
-                cartItem.Quantity += cartItemDto.Quantity;
-                if (!_cart.Save())
-                {
-                    ModelState.AddModelError("", "Error while saving");
-                    return BadRequest(ModelState);
-                }
-                return NoContent();
-            }
-            var price = _product.GetProduct(cartItemDto.ProductId).Price;
-            var mapCartItem = _mapper.Map<CartItem>(cartItemDto);
-            mapCartItem.UnitPrice = price;
-            if (!_cart.AddCartItem(mapCartItem))
-            {
-                return BadRequest(ModelState);
-            }
+            await _service.AddToCartAsync(dto);
             return NoContent();
         }
 
-        [HttpGet("{cartId}/items")]
-        public IActionResult GetCartItems(int cartId)
+        [HttpDelete("{productId}")]
+        public async Task<IActionResult> RemoveItem(int productId)
         {
-            if (!_cart.CartExists(cartId))
-                return NotFound();
-            var prods = _mapper.Map<List<CartItemDto>>(_cart.GetCartItems(cartId));
-            return Ok(prods);
-        }
-
-        [HttpGet("{cartId}/total")]
-        public IActionResult GetTotalAmount([FromRoute]int cartId)
-        {
-            if (!_cart.CartExists(cartId))
-                return NotFound();
-            var total = _cart.TotalAmount(cartId);
-            return Ok(total);
-        }
-
-        [HttpDelete("{cartId}/items/{prodId}")]
-        public IActionResult DeleteCartItem([FromRoute]int cartId, [FromRoute] int prodId)
-        {
-            var isDeleted = _cart.DeleteCartItem(cartId, prodId);
-            if (!isDeleted)
-                return NotFound();
+            await _service.RemoveItemAsync(productId);
             return NoContent();
         }
 
-        [HttpDelete("{cartId}/items")]
-        public IActionResult DeleteCartItems([FromRoute]int cartId)
+        [HttpDelete]
+        public async Task<IActionResult> ClearCart()
         {
-            if (!_cart.DeleteCartItems(cartId))
-            {
-                ModelState.AddModelError("", "Error while saving");
-                return BadRequest(ModelState);
-            }
+            await _service.ClearCartAsync();
             return NoContent();
         }
     }

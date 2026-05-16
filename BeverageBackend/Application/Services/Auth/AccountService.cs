@@ -154,7 +154,7 @@ namespace BeverageBackend.Application.Services.Auth
             {
                 User = user
             };
-            _cart.CreateCart(cart);
+            _cart.Add(cart);
             var customerRole = await _role.GetByNameAsync("CUSTOMER");
             if (customerRole == null)
             {
