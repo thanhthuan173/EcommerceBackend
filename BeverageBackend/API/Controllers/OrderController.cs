@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using BeverageBackend.Application.Dto;
+using BeverageBackend.Application.Dto.Order;
 using BeverageBackend.Application.Interfaces;
+using BeverageBackend.Application.Interfaces.Services;
+using BeverageBackend.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Threading.Tasks;
 
 namespace BeverageBackend.API.Controllers
 {
@@ -12,56 +16,67 @@ namespace BeverageBackend.API.Controllers
     [ApiController]
     public class OrderController:ControllerBase
     {
-        private readonly IOrderRepository _order;
-        private readonly ICartRepository _cart;
-        private readonly IMapper _mapper;
+        private readonly IOrderService _service;
 
-        public OrderController(IOrderRepository order,ICartRepository cart,IMapper mapper)
+        public OrderController(IOrderService service)
         {
-            _order = order;
-            _cart = cart;
-            _mapper = mapper;
+            _service = service;
+        }
+
+        [Authorize(Roles ="ADMIN")]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetOrders()
+        {
+            return Ok(await _service.GetAllOrdersAsync());
         }
 
         [HttpGet]
-        public IActionResult GetAllOrders()
+        public async Task<IActionResult> GetMyOrders()
         {
-            var oders = _mapper.Map<List<OrderDto>>(_order.GetOrders());
-            return Ok(oders);
+            return Ok(await _service.GetMyOrdersAsync());
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetOder(int id)
+        public async Task<IActionResult> GetOrderById(int id)
         {
-            if (!_order.OrderExists(id))
-                NotFound();
-            var order = _mapper.Map<OrderDto>(_order.GetOrder(id));
-            return Ok(order);
+            return Ok(await _service.GetOrderByIdAsync(id));
         }
 
-        [HttpGet("{orderId}/user")]
-        public IActionResult GetUserByOrderId(int orderId)
+        [Authorize(Roles = "ADMIN")]
+        [HttpGet("admin/{id}")]
+        public async Task<IActionResult> GetOrderByIdForAdmin(int id)
         {
-            if (!_order.OrderExists(orderId))
-                NotFound();
-            var cus = _mapper.Map<UserDto>(_order.GetUserByOrderId(orderId));
-            return Ok(cus);
+            return Ok(await _service.GetOrderByIdForAdminAsync(id));
         }
 
-        [HttpPost("{cartId}")]
-        public IActionResult CreateOrder(int cartId)
+        [HttpPost]
+        public async Task<IActionResult> Create()
         {
-            if (!_cart.CartExists(cartId))
-                NotFound();
-            if (_cart.GetCartItems(cartId).IsNullOrEmpty())
-                return BadRequest("Cart is empty");
-            var save = _order.CreateOrder(cartId);
-            if (save==0)
-            {
-                ModelState.AddModelError("", "Error while saving");
-                return BadRequest();
-            }
-            return Ok(save);
+            var order = await _service.CreateOrderAsync();
+            return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] OrderStatus status)
+        {
+            await _service.UpdateStatusAsync(id, status);
+            return NoContent();
+        }
+
+        [HttpPut("{id}/cancel")]
+        public async Task<IActionResult> CancelOrder(int id)
+        {
+            await _service.CancelOrderAsync(id);
+            return NoContent();
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _service.DeleteOrderAsync(id);
+            return NoContent();
         }
     }
 }

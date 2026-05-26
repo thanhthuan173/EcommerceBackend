@@ -4,10 +4,10 @@ namespace BeverageBackend.Application.Interfaces
 {
     public interface IOrderRepository
     {
-        ICollection<Order> GetOrders();
-        Order GetOrder(int id);
-        User GetUserByOrderId(int orderId);
-        int CreateOrder(int cartId);
-        bool OrderExists(int orderId);
+        Task<IEnumerable<Order>> GetAllOrdersAsync();
+        Task<IEnumerable<Order>> GetByUserAsync(int userId);
+        Task<Order?> GetByIdAsync(int id);
+        Task<Order?> GetByIdWithItemsAsync(int id, bool includeDeleted = false);
+        void Add(Order order);
     }
 }

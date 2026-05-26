@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BeverageBackend.Application.Dto
+namespace BeverageBackend.Application.Dto.Order
 {
     public class OrderItemDto
     {

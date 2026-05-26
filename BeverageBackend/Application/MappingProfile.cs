@@ -2,6 +2,7 @@
 using BeverageBackend.Application.Dto;
 using BeverageBackend.Application.Dto.Auth;
 using BeverageBackend.Application.Dto.Cart;
+using BeverageBackend.Application.Dto.Order;
 using BeverageBackend.Application.Dto.Product;
 using BeverageBackend.Domain.Models;
 
@@ -36,6 +37,7 @@ namespace BeverageBackend.Application
 
             //order
             CreateMap<Order, OrderDto>();
+            CreateMap<Order, OrderDetailDto>();
             CreateMap<OrderItem, OrderItemDto>();
         }
     }
