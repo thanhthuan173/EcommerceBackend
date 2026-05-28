@@ -11,7 +11,7 @@ namespace BeverageBackend.API.Controllers
 {
     [ApiController]
     [Route("api/[Controller]")]
-    public class AccountController : Controller
+    public class AccountController : ControllerBase
     {
         private readonly IAccountService _service;
 
@@ -21,54 +21,29 @@ namespace BeverageBackend.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto dto)
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             await _service.Register(dto);
-            return Ok("Regiter successfully");
+            return Created();
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto dto)
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var token = await _service.Login(dto);
-                return Ok(token);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(await _service.Login(dto));
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken(RefreshTokenDto dto)
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto dto)
         {
-            try
-            {
-                var token = await _service.RefreshToken(dto);
-                return Ok(token);
-            }
-            catch (Exception ex)
-            {
-                return Unauthorized(ex.Message);
-            }
+            return Ok(await _service.RefreshToken(dto));
         }
 
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout(RefreshTokenDto dto)
+        public async Task<IActionResult> Logout([FromBody] RefreshTokenDto dto)
         {
             await _service.Logout(dto);
-            return Ok();
+            return NoContent();
         }
     }
 }
