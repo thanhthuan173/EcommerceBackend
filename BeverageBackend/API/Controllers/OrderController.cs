@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BeverageBackend.Application.Common.Query;
 using BeverageBackend.Application.Dto;
 using BeverageBackend.Application.Dto.Order;
 using BeverageBackend.Application.Interfaces;
@@ -25,15 +26,31 @@ namespace BeverageBackend.API.Controllers
 
         [Authorize(Roles ="ADMIN")]
         [HttpGet("all")]
-        public async Task<IActionResult> GetOrders()
+        public async Task<IActionResult> GetOrders([FromQuery] OrderQueryParameters query)
         {
-            return Ok(await _service.GetAllOrdersAsync());
+            var result = await _service.GetAllOrdersAsync(query);
+            return Ok(new
+            {
+                result.Items,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalCount,
+                result.TotalPages
+            });
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMyOrders()
+        public async Task<IActionResult> GetMyOrders([FromQuery] OrderQueryParameters query)
         {
-            return Ok(await _service.GetMyOrdersAsync());
+            var result = await _service.GetMyOrdersAsync(query);
+            return Ok(new
+            {
+                result.Items,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalCount,
+                result.TotalPages
+            });
         }
 
         [HttpGet("{id}")]

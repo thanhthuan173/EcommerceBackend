@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using BeverageBackend.Application.Common;
+using BeverageBackend.Application.Common.Query;
 using BeverageBackend.Application.Dto.Order;
 using BeverageBackend.Application.Exceptions;
 using BeverageBackend.Application.Interfaces;
@@ -31,16 +33,29 @@ namespace BeverageBackend.Application.Services
                 throw new ForbiddenException("Access denied");
         }
 
-        public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
+        public async Task<PagedResult<OrderDto>> GetAllOrdersAsync(OrderQueryParameters query)
         {
-            return _mapper.Map<List<OrderDto>>(await _orderRepo.GetAllOrdersAsync());
+            var result = await _orderRepo.GetAllOrdersAsync(query);
+            return new PagedResult<OrderDto>
+                (
+                    _mapper.Map<List<OrderDto>>(result.Items),
+                    result.TotalCount,
+                    result.PageNumber,
+                    result.PageSize
+                );
         }
 
-        public async Task<IEnumerable<OrderDto>> GetMyOrdersAsync()
+        public async Task<PagedResult<OrderDto>> GetMyOrdersAsync(OrderQueryParameters query)
         {
             var userId = _currentUser.UserId;
-            var orders = await _orderRepo.GetByUserAsync(userId);
-            return _mapper.Map<List<OrderDto>>(orders);
+            var result = await _orderRepo.GetByUserAsync(userId, query);
+            return new PagedResult<OrderDto>
+                (
+                    _mapper.Map<List<OrderDto>>(result.Items),
+                    result.TotalCount,
+                    result.PageNumber,
+                    result.PageSize
+                );
         }
 
         public async Task<OrderDetailDto> GetOrderByIdAsync(int orderId)
