@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BeverageBackend.Application.Dto
+namespace BeverageBackend.Application.Dto.Product
 {
     public class UpdateCategoryDto
     {

@@ -7,54 +7,24 @@ namespace BeverageBackend.Infrastructure.Repository
 {
     public class UserRepository : IUserRepository
     {
-        private BeverageDbContext _context;
+        private readonly BeverageDbContext _context;
 
         public UserRepository(BeverageDbContext context)
         {
             _context = context;
         }
 
-        public void Add(User user)
+        public async Task<User?> GetByIdAsync(int id)
         {
-            _context.Users.Add(user);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public bool UserExits(int id)
+        public async Task<User?> GetByIdWithRolesAsync(int id)
         {
-            return _context.Users.Any(c => c.Id == id);
-        }
-
-        public User? GetUser(int id)
-        {
-            return _context.Users.Where(c => c.Id == id).FirstOrDefault();
-        }
-
-        public ICollection<User> GetUsers()
-        {
-            return _context.Users.OrderBy(c=>c.Id).ToList();
-        }
-
-        public ICollection<Order> GetOrdersByUser(int id)
-        {
-            var qr = _context.Orders.Where(o => o.UserId == id);
-            return qr.ToList();
-        }
-
-        public bool Save()
-        {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
-        }
-
-        public bool DeleteUser(int id)
-        {
-            var user = _context.Users.Where(c => c.Id == id).FirstOrDefault();
-            if (user == null)
-            {
-                return false;
-            }
-            user.IsActive = false;
-            return Save();
+            return await _context.Users
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<User?> GetByUsernameAsync(string username)
@@ -69,13 +39,32 @@ namespace BeverageBackend.Infrastructure.Repository
 
         public async Task<User?> GetByUsernameOrEmailAsync(string account)
         {
-            return await _context.Users.Where(u => u.Username == account || u.Email == account).FirstOrDefaultAsync();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == account || u.Email == account);
         }
 
-        public bool CreateUser(User user)
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
-            _context.Users.Add(user);
-            return Save();
+            return await _context.Users.ToListAsync();
+        }
+
+        public void Add(User user)
+        {
+            _context.Add(user);
+        }
+
+        public void Update(User user)
+        {
+            _context.Update(user);
+        }
+
+        public async Task<bool> ExistsByEmailAsync(string email)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> ExistsByUsernameAsync(string username)
+        {
+            return await _context.Users.AnyAsync(u => u.Username == username);
         }
     }
 }

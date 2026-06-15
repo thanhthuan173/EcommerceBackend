@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using BeverageBackend.Application.Dto;
+using BeverageBackend.Application.Dto.User;
 using BeverageBackend.Application.Interfaces;
+using BeverageBackend.Application.Interfaces.Services;
 using BeverageBackend.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -11,72 +13,56 @@ namespace BeverageBackend.API.Controllers
     [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
-    public class UserController:ControllerBase
+    public class UserController : ControllerBase
     {
-        private IUserRepository _user;
-        private IMapper _mapper;
+        private readonly IUserService _service;
 
-        public UserController(IUserRepository user,IMapper mapper)
+        public UserController(IUserService service)
         {
-            _user = user;
-            _mapper = mapper;
+            _service = service;
+        }
+
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            return Ok(await _service.GetProfileAsync());
+        }
+
+        [HttpPatch("profile")]
+        public async Task<IActionResult> UpdateProfile(UpdateProfileDto dto)
+        {
+            await _service.UpdateProfileAsync(dto);
+            return NoContent();
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetUser(int id)
+        {
+            return Ok(await _service.GetUserByIdAsync(id));
         }
 
         [HttpGet]
-        public IActionResult GetAllUser()
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetAllUsers()
         {
-            var users= _mapper.Map<List<UserDto>>(_user.GetUsers());
-            return Ok(users);
-        }
-            
-
-        [HttpGet("{id}")]
-        public IActionResult GetUser(int id)
-        {
-            if (!_user.UserExits(id))
-                return NotFound();
-            var cus = _mapper.Map<UserDto>(_user.GetUser(id));
-            return Ok(cus);
+            return Ok(await _service.GetUsersAsync());
         }
 
-        [HttpGet("{id}/orders")]
-        public IActionResult GetOrders(int id)
+        [HttpPatch("{id}/activate")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> Activate(int id)
         {
-            if (_user.UserExits(id))
-                return NotFound();
-            var orders = _mapper.Map<List<OrderDto>>(_user.GetOrdersByUser(id));
-            return Ok(orders);
+            await _service.ActivateUserAsync(id);
+            return NoContent();
         }
 
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] CreateUserDto createUserDto)
+        [HttpPatch("{id}/deactivate")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> Deactivate(int id)
         {
-            var isExist = _user.GetUsers().Where(c => c.Id == createUserDto.Id).FirstOrDefault();
-            if (_user.UserExits(createUserDto.Id))
-            {
-                ModelState.AddModelError("User", "User already exist");
-                return BadRequest(ModelState);
-            }
-            var userMap = _mapper.Map<User>(createUserDto);
-            if (!_user.CreateUser(userMap))
-            {
-                return StatusCode(500, "Error while saving");
-            }
-            return Ok("Create successfully");
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteUser(int id)
-        {
-            if (!_user.UserExits(id))
-            {
-                return NotFound();
-            }
-            if (!_user.DeleteUser(id))
-            {
-                return StatusCode(500, "Error while saving");
-            }
-            return Ok("Delete successfully");
+            await _service.DeactivateUserAsync(id);
+            return NoContent();
         }
     }
 }

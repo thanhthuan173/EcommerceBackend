@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BeverageBackend.Application.Dto;
+using BeverageBackend.Application.Dto.User;
 using BeverageBackend.Application.Dto.Auth;
 using BeverageBackend.Application.Dto.Cart;
 using BeverageBackend.Application.Dto.Order;
@@ -8,7 +8,7 @@ using BeverageBackend.Domain.Models;
 
 namespace BeverageBackend.Application
 {
-    public class MappingProfile: Profile
+    public class MappingProfile : Profile
     {
         public MappingProfile()
         {
@@ -27,13 +27,14 @@ namespace BeverageBackend.Application
 
             //user
             CreateMap<User, UserDto>();
-            CreateMap<CreateUserDto, User>();
+            CreateMap<User, UserDetailDto>();
+            CreateMap<User, ProfileDto>();
             CreateMap<RegisterDto, User>();
 
             //cart
             CreateMap<Cart, CartDto>();
             CreateMap<CartItem, CartItemDto>();
-            CreateMap<AddCartItemDto,CartItem>();
+            CreateMap<AddCartItemDto, CartItem>();
 
             //order
             CreateMap<Order, OrderDto>();

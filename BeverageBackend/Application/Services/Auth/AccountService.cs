@@ -119,13 +119,11 @@ namespace BeverageBackend.Application.Services.Auth
 
         public async Task Register(RegisterDto dto)
         {
-            var isEmailExisted = await _user.GetByEmailAsync(dto.Email);
-            if (isEmailExisted != null)
+            if (await _user.ExistsByEmailAsync(dto.Email))
             {
                 throw new AlreadyExistsException("Email already existed");
             }
-            var isUsernameExisted = await _user.GetByUsernameAsync(dto.Username);
-            if (isUsernameExisted != null)
+            if (await _user.ExistsByUsernameAsync(dto.Username))
             {
                 throw new AlreadyExistsException("Username already existed");
             }

@@ -4,16 +4,14 @@ namespace BeverageBackend.Application.Interfaces
 {
     public interface IUserRepository
     {
-        ICollection<User> GetUsers();
-        User? GetUser(int id);
+        Task<User?> GetByIdAsync(int id);
+        Task<User?> GetByIdWithRolesAsync(int id);
         Task<User?> GetByUsernameAsync(string username);
         Task<User?> GetByEmailAsync(string email);
         Task<User?> GetByUsernameOrEmailAsync(string account);
-        ICollection<Order> GetOrdersByUser(int id);
+        Task<IEnumerable<User>> GetAllAsync();
         void Add(User user);
-        bool CreateUser(User user);
-        bool DeleteUser(int id);
-        bool Save();
-        bool UserExits(int id);
+        Task<bool> ExistsByUsernameAsync(string username);
+        Task<bool> ExistsByEmailAsync(string email);
     }
 }
