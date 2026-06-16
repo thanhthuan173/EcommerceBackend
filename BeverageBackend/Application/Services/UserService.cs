@@ -1,4 +1,6 @@
 using AutoMapper;
+using BeverageBackend.Application.Common;
+using BeverageBackend.Application.Common.Query;
 using BeverageBackend.Application.Dto.User;
 using BeverageBackend.Application.Exceptions;
 using BeverageBackend.Domain.Models;
@@ -84,9 +86,15 @@ namespace BeverageBackend.Application.Interfaces.Services
             return mapper;
         }
 
-        public async Task<IEnumerable<UserDto>> GetUsersAsync()
+        public async Task<PagedResult<UserDto>> GetUsersAsync(UserQueryParameters query)
         {
-            return _mapper.Map<List<UserDto>>(await _repo.GetAllAsync());
+            var result =  await _repo.GetAllAsync(query);
+            return new PagedResult<UserDto>(
+                _mapper.Map<List<UserDto>>(result.Items),
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize
+            );
         }
 
         public async Task ActivateUserAsync(int id)

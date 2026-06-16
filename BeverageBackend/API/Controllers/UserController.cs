@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BeverageBackend.Application.Common.Query;
 using BeverageBackend.Application.Dto;
 using BeverageBackend.Application.Dto.User;
 using BeverageBackend.Application.Interfaces;
@@ -44,9 +45,17 @@ namespace BeverageBackend.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers([FromQuery] UserQueryParameters query)
         {
-            return Ok(await _service.GetUsersAsync());
+            var result = await _service.GetUsersAsync(query);
+            return Ok(new
+            {
+                result.Items,
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages
+            });
         }
 
         [HttpPatch("{id}/activate")]
