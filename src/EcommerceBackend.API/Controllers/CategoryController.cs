@@ -14,7 +14,7 @@ namespace EcommerceBackend.API.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
-    public class CategoryController:ControllerBase
+    public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _service;
 
@@ -27,7 +27,7 @@ namespace EcommerceBackend.API.Controllers
         public async Task<IActionResult> GetAll([FromQuery] CategoryQueryParameters query)
         {
             var result = await _service.GetAllAsync(query);
-            return Ok(new 
+            return Ok(new
             {
                 result.Items,
                 result.PageNumber,
@@ -43,13 +43,13 @@ namespace EcommerceBackend.API.Controllers
             return Ok(await _service.GetByIdAsync(id));
         }
 
-        [AllowAnonymous]
         [HttpGet("{id}/products")]
         public async Task<IActionResult> GetCategoryWithProducts(int id)
         {
             return Ok(await _service.GetCategoryWithProductsAsync(id));
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto dto)
         {
@@ -57,13 +57,15 @@ namespace EcommerceBackend.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory([FromRoute]int id, [FromBody] UpdateCategoryDto dto)
+        public async Task<IActionResult> UpdateCategory([FromRoute] int id, [FromBody] UpdateCategoryDto dto)
         {
             await _service.UpdateAsync(id, dto);
             return NoContent();
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {

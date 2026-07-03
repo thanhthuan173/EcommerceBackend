@@ -6,6 +6,7 @@ using EcommerceBackend.Application.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EcommerceBackend.API.Controllers
 {
@@ -39,6 +40,7 @@ namespace EcommerceBackend.API.Controllers
             return Ok(await _service.RefreshToken(dto));
         }
 
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout([FromBody] RefreshTokenDto dto)
         {

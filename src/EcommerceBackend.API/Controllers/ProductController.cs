@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace EcommerceBackend.API.Controllers
 {
-    //[Authorize]
     [Route("api/[Controller]")]
     [ApiController]
     public class ProductController:ControllerBase
@@ -22,7 +21,6 @@ namespace EcommerceBackend.API.Controllers
             _service = service;
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] ProductQueryParameters query)
         {
@@ -43,6 +41,7 @@ namespace EcommerceBackend.API.Controllers
             return Ok(await _service.GetById(id));
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto dto)
         {
@@ -50,6 +49,7 @@ namespace EcommerceBackend.API.Controllers
             return CreatedAtAction(nameof(GetById),new {id=product.Id},product);
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct([FromRoute]int id, [FromBody]UpdateProductDto dto)
         {
@@ -57,6 +57,7 @@ namespace EcommerceBackend.API.Controllers
             return Ok("Update successfully");
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePoduct(int id)
         {

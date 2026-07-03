@@ -25,7 +25,6 @@ namespace EcommerceBackend.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles ="ADMIN")]
         public async Task<IActionResult> Create([FromBody] RoleDto dto)
         {
             await _service.CreateAsync(dto.Name);
