@@ -10,7 +10,7 @@ namespace EcommerceBackend.Domain.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal UnitPrice { get; set; }
 
-        public Cart Cart { get; set; }
-        public Product Product { get; set; }
+        public Cart Cart { get; set; } = null!;
+        public Product Product { get; set; } = null!;
     }
 }

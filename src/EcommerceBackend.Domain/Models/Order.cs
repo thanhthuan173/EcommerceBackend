@@ -13,7 +13,7 @@ namespace EcommerceBackend.Domain.Models
         public bool IsDeleted { get; set; } = false;
 
         public int UserId { get; set; }
-        public User User { get; set; }
-        public ICollection<OrderItem> OrderItems { get; set; }
+        public User User { get; set; } = null!;
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }
