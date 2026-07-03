@@ -2,6 +2,6 @@
 {
     public class RefreshTokenDto
     {
-        public string RefreshToken { get; set; } = null!;
+        public required string RefreshToken { get; set; }
     }
 }

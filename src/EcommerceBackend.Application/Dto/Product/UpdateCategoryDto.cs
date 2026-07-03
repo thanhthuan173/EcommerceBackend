@@ -5,6 +5,6 @@ namespace EcommerceBackend.Application.Dto.Product
     public class UpdateCategoryDto
     {
         [Required]
-        public string Name { get; set; }
+        public required string Name { get; set; }
     }
 }
