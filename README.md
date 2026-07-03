@@ -1,4 +1,4 @@
-# Beverage E-Commerce Backend (.NET 8)
+# E-Commerce Backend API (.NET 8)
 
 A RESTful backend API for an e-commerce system built with ASP.NET Core Web API.
 This project focuses on clean architecture, authentication, and handling real-world business logic such as cart management and order processing.
@@ -32,7 +32,7 @@ This project focuses on clean architecture, authentication, and handling real-wo
   - Return domain/entities  
   - ❌ Do not call `SaveChanges`  
 
-- **DbContext (`Models/BeverageDbContext.cs`)**
+- **DbContext (`Models/EcommerceDbContext.cs`)**
   - EF Core configuration and relationships  
 
 ---
@@ -226,13 +226,13 @@ Update `appsettings.json`:
 ### 2. Apply Migrations
 
 ```bash id="l0a9v2"
-dotnet ef database update --project BeverageBackend
+dotnet ef database update --project EcommerceBackend
 ```
 ### 3. Run Application
 
 ```bash
 dotnet build
-dotnet run --project BeverageBackend
+dotnet run --project EcommerceBackend
 ```
 ---
 
