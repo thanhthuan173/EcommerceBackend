@@ -2,7 +2,7 @@
 
 namespace EcommerceBackend.Application.Common.Query
 {
-    public class OrderQueryParameters:QueryParameters
+    public class OrderQueryParameters : QueryParameters
     {
         public decimal? MinTotalAmount { get; set; }
         public decimal? MaxTotalAmount { get; set; }

@@ -50,14 +50,14 @@ namespace EcommerceBackend.Infrastructure.Repository
             var items = await products
                 .Skip((query.PageNumber - 1) * query.PageSize)
                 .Take(query.PageSize)
-                .Include(p=>p.Category)
+                .Include(p => p.Category)
                 .ToListAsync();
             return new PagedResult<Product>(items, totalCount, query.PageNumber, query.PageSize);
         }
 
         public async Task<Product?> GetByIdAsync(int id)
         {
-            return await _context.Products.Include(p=>p.Category).FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<Product?> IsNameExistsAsync(string prodName, int cateId)

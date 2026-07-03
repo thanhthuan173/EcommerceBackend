@@ -3,17 +3,7 @@ using EcommerceBackend.Application.Dto.Auth;
 using EcommerceBackend.Application.Interfaces;
 using EcommerceBackend.Application.Interfaces.Services;
 using EcommerceBackend.Domain.Models;
-using EcommerceBackend.Application.Dto;
-using EcommerceBackend.Application.Dto.Role;
-using EcommerceBackend.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using EcommerceBackend.Application.Exceptions;
 using EcommerceBackend.Application.Exceptions.Token;
 
@@ -30,7 +20,7 @@ namespace EcommerceBackend.Application.Services.Auth
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AccountService(IUserRepository user,ICartRepository cart,IRoleRepository role, IUserRoleRepository userRole, IRefreshTokenRepository refreshToken, ITokenService tokenService,IMapper mapper, IUnitOfWork unitOfWork)
+        public AccountService(IUserRepository user, ICartRepository cart, IRoleRepository role, IUserRoleRepository userRole, IRefreshTokenRepository refreshToken, ITokenService tokenService, IMapper mapper, IUnitOfWork unitOfWork)
         {
             _user = user;
             _cart = cart;
@@ -45,7 +35,7 @@ namespace EcommerceBackend.Application.Services.Auth
         public async Task<TokenDto> Login(LoginDto dto)
         {
             var user = await _user.GetByUsernameOrEmailAsync(dto.Account);
-            if (user == null||!BCrypt.Net.BCrypt.Verify(dto.Password, user.HashPassword))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.HashPassword))
                 throw new UnauthorizedException("Invalid username or password");
             if (!user.IsActive)
                 throw new ForbiddenException("Account is deactivated");
@@ -89,7 +79,7 @@ namespace EcommerceBackend.Application.Services.Auth
                 await _tokenService.RevokeAllUserTokens(oldRefreshTokenEntity.UserId);
                 throw new TokenReuseException("Token reuse detected");
             }
-            if (oldRefreshTokenEntity.ExpiresAt<DateTime.UtcNow)
+            if (oldRefreshTokenEntity.ExpiresAt < DateTime.UtcNow)
                 throw new ExpiredTokenException("Refresh token expired");
             //logout,change password, admin revoke,revoke all user
             if (oldRefreshTokenEntity.IsRevoked)
@@ -106,14 +96,14 @@ namespace EcommerceBackend.Application.Services.Auth
                 UserId = oldRefreshTokenEntity.UserId,
                 ExpiresAt = _tokenService.GetRefreshTokenExpiry(),
                 IsRevoked = false,
-                IsUsed=false
+                IsUsed = false
             };
             _refreshToken.Add(newRefreshTokenEntity);
             await _unitOfWork.SaveChangesAsync();
             return new TokenDto()
             {
-                AccessToken= accessToken,
-                RefreshToken= newRefreshToken
+                AccessToken = accessToken,
+                RefreshToken = newRefreshToken
             };
         }
 
@@ -128,7 +118,7 @@ namespace EcommerceBackend.Application.Services.Auth
                 throw new AlreadyExistsException("Username already existed");
             }
             var user = _mapper.Map<User>(dto);
-            user.HashPassword= BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            user.HashPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             _user.Add(user);
             var cart = new Cart()
             {

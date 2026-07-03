@@ -1,19 +1,14 @@
-﻿using AutoMapper;
-using EcommerceBackend.Application.Dto;
-using EcommerceBackend.Application.Dto.Cart;
-using EcommerceBackend.Application.Interfaces;
+﻿using EcommerceBackend.Application.Dto.Cart;
 using EcommerceBackend.Application.Interfaces.Services;
-using EcommerceBackend.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace EcommerceBackend.API.Controllers
 {
     [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
-    public class CartController:ControllerBase
+    public class CartController : ControllerBase
     {
         private readonly ICartService _service;
 

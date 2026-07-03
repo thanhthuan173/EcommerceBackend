@@ -69,7 +69,7 @@ namespace EcommerceBackend.Application.Services
 
         public async Task<OrderDetailDto> GetOrderByIdForAdminAsync(int orderId)
         {
-            var order = await _orderRepo.GetByIdWithItemsAsync(orderId,true);
+            var order = await _orderRepo.GetByIdWithItemsAsync(orderId, true);
             if (order == null)
                 throw new NotFoundException("Order not found");
             return _mapper.Map<OrderDetailDto>(order);
@@ -83,7 +83,7 @@ namespace EcommerceBackend.Application.Services
                 throw new NotFoundException("Cart not found");
             if (!cart.CartItems.Any())
                 throw new BadRequestException("Cart is empty");
-            foreach(var item in cart.CartItems)
+            foreach (var item in cart.CartItems)
             {
                 if (item.Quantity > item.Product.Stock)
                     throw new BadRequestException($"{item.Product.Name} doesn't have enough stock");
@@ -95,7 +95,7 @@ namespace EcommerceBackend.Application.Services
                 UserId = userId,
                 OrderItems = new List<OrderItem>()
             };
-            foreach(var item in cart.CartItems)
+            foreach (var item in cart.CartItems)
             {
                 order.OrderItems.Add(new OrderItem()
                 {
@@ -137,7 +137,7 @@ namespace EcommerceBackend.Application.Services
             if (order.Status >= OrderStatus.Shipping)
                 throw new BadRequestException($"Can not cancelled order with status {order.Status}");
             order.Status = OrderStatus.Cancelled;
-            foreach(var item in order.OrderItems)
+            foreach (var item in order.OrderItems)
             {
                 item.Product.Stock += item.Quantity;
             }

@@ -7,7 +7,7 @@ namespace EcommerceBackend.API.Middlewares
         public RequestDelegate _next { get; set; }
         public ILogger<ExceptionMiddleware> _logger { get; set; }
 
-        public ExceptionMiddleware(RequestDelegate next,ILogger<ExceptionMiddleware> logger)
+        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -33,7 +33,7 @@ namespace EcommerceBackend.API.Middlewares
             string message = "Something went wrong";
             string errorCode = "InternalServerError";
 
-            if(ex is AppException appEx)
+            if (ex is AppException appEx)
             {
                 statusCode = appEx.StatusCode;
                 message = appEx.Message;

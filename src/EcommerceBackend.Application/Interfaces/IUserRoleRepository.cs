@@ -9,7 +9,7 @@ namespace EcommerceBackend.Application.Interfaces
         Task<UserRole?> GetUserRoleAsync(int userId, int roleId);
         Task<List<UserRole>> GetByUserAsync(int userId);
         Task<List<string>> GetRoleNameByUserAsync(int userId);
-        Task<bool> IsExisted(int userId,int roleId);
+        Task<bool> IsExisted(int userId, int roleId);
         void Delete(UserRole userRole);
     }
 }

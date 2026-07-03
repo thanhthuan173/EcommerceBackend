@@ -1,10 +1,5 @@
-﻿using AutoMapper;
-using EcommerceBackend.Application.Dto.Auth;
+﻿using EcommerceBackend.Application.Dto.Auth;
 using EcommerceBackend.Application.Interfaces.Services;
-using EcommerceBackend.Application.Dto;
-using EcommerceBackend.Application.Interfaces;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 

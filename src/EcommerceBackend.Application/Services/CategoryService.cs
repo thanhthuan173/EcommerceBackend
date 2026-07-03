@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using EcommerceBackend.Application.Common;
 using EcommerceBackend.Application.Common.Query;
-using EcommerceBackend.Application.Dto;
 using EcommerceBackend.Application.Dto.Product;
 using EcommerceBackend.Application.Exceptions;
 using EcommerceBackend.Application.Interfaces;
@@ -30,7 +29,7 @@ namespace EcommerceBackend.Application.Services
                 _mapper.Map<List<CategoryDto>>(result.Items),
                 result.TotalCount,
                 result.PageNumber,
-                result.PageSize); 
+                result.PageSize);
         }
 
         public async Task<CategoryDto> GetByIdAsync(int id)

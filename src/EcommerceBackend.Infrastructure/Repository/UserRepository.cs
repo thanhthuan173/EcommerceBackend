@@ -46,7 +46,7 @@ namespace EcommerceBackend.Infrastructure.Repository
 
         public async Task<PagedResult<User>> GetAllAsync(UserQueryParameters query)
         {
-            var users = _context.Users.Include(u=>u.UserRoles).ThenInclude(ur=>ur.Role).AsQueryable();
+            var users = _context.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role).AsQueryable();
 
             if (!string.IsNullOrEmpty(query.FullName))
             {
@@ -54,7 +54,7 @@ namespace EcommerceBackend.Infrastructure.Repository
             }
             if (!string.IsNullOrEmpty(query.Gender))
             {
-                users = users.Where(u => u.Gender.ToLower()==query.Gender.Trim().ToLower());
+                users = users.Where(u => u.Gender.ToLower() == query.Gender.Trim().ToLower());
             }
             if (!string.IsNullOrEmpty(query.Address))
             {
@@ -74,7 +74,7 @@ namespace EcommerceBackend.Infrastructure.Repository
             }
             if (!string.IsNullOrEmpty(query.Role))
             {
-                users = users.Where(u=>u.UserRoles.Any(ur=>ur.Role.Name.ToLower()==query.Role.ToLower()));
+                users = users.Where(u => u.UserRoles.Any(ur => ur.Role.Name.ToLower() == query.Role.ToLower()));
             }
 
             switch (query.SortBy?.ToLower())

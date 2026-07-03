@@ -1,8 +1,6 @@
 ﻿using EcommerceBackend.API.Configurations;
 using EcommerceBackend.Application.Interfaces;
 using EcommerceBackend.Application.Interfaces.Services;
-using EcommerceBackend.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

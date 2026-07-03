@@ -1,14 +1,8 @@
-﻿using AutoMapper;
-using EcommerceBackend.Application.Common.Query;
-using EcommerceBackend.Application.Dto;
+﻿using EcommerceBackend.Application.Common.Query;
 using EcommerceBackend.Application.Dto.Product;
-using EcommerceBackend.Application.Interfaces;
 using EcommerceBackend.Application.Interfaces.Services;
-using EcommerceBackend.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace EcommerceBackend.API.Controllers
 {

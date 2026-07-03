@@ -1,7 +1,6 @@
 ﻿using EcommerceBackend.Application.Dto.Role;
 using EcommerceBackend.Application.Interfaces;
 using EcommerceBackend.Application.Interfaces.Services;
-using EcommerceBackend.Infrastructure.Persistence;
 using EcommerceBackend.Domain.Models;
 
 namespace EcommerceBackend.Application.Services
@@ -20,10 +19,10 @@ namespace EcommerceBackend.Application.Services
         public async Task<List<RolesDto>> GetRolesAsync()
         {
             var roles = await _repo.GetRolesAsync();
-            return roles.Select(r=>new RolesDto()
+            return roles.Select(r => new RolesDto()
             {
-                Id=r.Id,
-                Name=r.Name
+                Id = r.Id,
+                Name = r.Name
             }).ToList();
         }
 
@@ -32,7 +31,7 @@ namespace EcommerceBackend.Application.Services
             if (string.IsNullOrWhiteSpace(roleName))
                 throw new ArgumentException("Name is required");
             roleName = roleName.Trim().ToUpper();
-            if (await _repo.GetByNameAsync(roleName)!=null)
+            if (await _repo.GetByNameAsync(roleName) != null)
                 throw new Exception("Role already exists");
             var newRole = new Role()
             {
@@ -73,9 +72,9 @@ namespace EcommerceBackend.Application.Services
                 throw new ArgumentException("Name is required");
             name = name.Trim().ToUpper();
             var role = await _repo.GetByIdAsync(id);
-            if (role==null)
+            if (role == null)
                 throw new Exception("Role not found");
-            if (await _repo.RoleExisted(name,id))
+            if (await _repo.RoleExisted(name, id))
                 throw new Exception("Role already existed");
             role.Name = name;
             await _unitOfWork.SaveChangesAsync();

@@ -2,12 +2,11 @@
 using EcommerceBackend.Application.Interfaces;
 using EcommerceBackend.Application.Interfaces.Services;
 using EcommerceBackend.Domain.Models;
-using EcommerceBackend.Infrastructure.Persistence;
 using System.Data;
 
 namespace EcommerceBackend.Application.Services
 {
-    public class UserRoleService:IUserRoleService
+    public class UserRoleService : IUserRoleService
     {
         private readonly IUserRoleRepository _repo;
         private readonly IUnitOfWork _unitOfWork;
@@ -20,7 +19,7 @@ namespace EcommerceBackend.Application.Services
 
         public async Task AddAsync(UserRole userRole)
         {
-            
+
             _repo.Add(userRole);
             await _unitOfWork.SaveChangesAsync();
         }
@@ -47,7 +46,7 @@ namespace EcommerceBackend.Application.Services
 
         public async Task RemoveRoleFromUser(int userId, int roleId)
         {
-            var userRole = await _repo.GetUserRoleAsync(userId,roleId);
+            var userRole = await _repo.GetUserRoleAsync(userId, roleId);
             if (userRole == null)
                 return;
             _repo.Delete(userRole);

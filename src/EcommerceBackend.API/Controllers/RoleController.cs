@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceBackend.API.Controllers
 {
-    [Authorize(Roles ="ADMIN")]
+    [Authorize(Roles = "ADMIN")]
     [ApiController]
     [Route("api/[Controller]")]
     public class RoleController : Controller
@@ -54,7 +54,7 @@ namespace EcommerceBackend.API.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateName(int id, [FromBody]RoleDto dto)
+        public async Task<IActionResult> UpdateName(int id, [FromBody] RoleDto dto)
         {
             await _service.UpdateNameAsync(id, dto.Name);
             return Ok("Update successfully");

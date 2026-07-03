@@ -82,13 +82,13 @@ namespace EcommerceBackend.Application.Interfaces.Services
         {
             var user = await _repo.GetByIdWithRolesAsync(id) ?? throw new NotFoundException("User not found");
             var mapper = _mapper.Map<UserDetailDto>(user);
-            mapper.Roles=user.UserRoles.Select(ur=>ur.Role.Name).ToList();
+            mapper.Roles = user.UserRoles.Select(ur => ur.Role.Name).ToList();
             return mapper;
         }
 
         public async Task<PagedResult<UserDto>> GetUsersAsync(UserQueryParameters query)
         {
-            var result =  await _repo.GetAllAsync(query);
+            var result = await _repo.GetAllAsync(query);
             return new PagedResult<UserDto>(
                 _mapper.Map<List<UserDto>>(result.Items),
                 result.TotalCount,
@@ -110,7 +110,7 @@ namespace EcommerceBackend.Application.Interfaces.Services
 
         public async Task DeactivateUserAsync(int id)
         {
-            if(id == _currentUser.UserId)
+            if (id == _currentUser.UserId)
             {
                 throw new BadRequestException("Cannot deactivate yourself");
             }

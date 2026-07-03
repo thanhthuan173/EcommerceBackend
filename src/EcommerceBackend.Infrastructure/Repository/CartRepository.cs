@@ -1,5 +1,4 @@
-﻿using EcommerceBackend.Application.Dto.Cart;
-using EcommerceBackend.Application.Interfaces;
+﻿using EcommerceBackend.Application.Interfaces;
 using EcommerceBackend.Domain.Models;
 using EcommerceBackend.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

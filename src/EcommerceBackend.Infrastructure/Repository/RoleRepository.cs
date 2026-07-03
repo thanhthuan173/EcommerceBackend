@@ -21,7 +21,7 @@ namespace EcommerceBackend.Infrastructure.Repository
 
         public void Add(Role role)
         {
-            _context.Roles.AddAsync(role); 
+            _context.Roles.AddAsync(role);
         }
 
         public async Task<Role?> GetByIdAsync(int id)
@@ -36,7 +36,7 @@ namespace EcommerceBackend.Infrastructure.Repository
 
         public Task<bool> RoleExisted(string roleName, int excludeId)
         {
-            return _context.Roles.AnyAsync(r => r.Name == roleName&&r.Id!= excludeId);
+            return _context.Roles.AnyAsync(r => r.Name == roleName && r.Id != excludeId);
         }
 
         public void Delete(Role role)

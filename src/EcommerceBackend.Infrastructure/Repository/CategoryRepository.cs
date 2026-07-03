@@ -46,7 +46,7 @@ namespace EcommerceBackend.Infrastructure.Repository
 
         public async Task<Category?> GetByIdAsync(int id)
         {
-            return await _context.Categories.FirstOrDefaultAsync(c=>c.Id==id);
+            return await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Category?> GetByNameAsync(string name)

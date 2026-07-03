@@ -15,7 +15,7 @@ namespace EcommerceBackend.Application.Services
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUser;
 
-        public CartService(ICartRepository cartRepo, IProductRepository productRepo, IUnitOfWork unitOfWork, IMapper mapper,ICurrentUserService currentUser)
+        public CartService(ICartRepository cartRepo, IProductRepository productRepo, IUnitOfWork unitOfWork, IMapper mapper, ICurrentUserService currentUser)
         {
             _cartRepo = cartRepo;
             _productRepo = productRepo;

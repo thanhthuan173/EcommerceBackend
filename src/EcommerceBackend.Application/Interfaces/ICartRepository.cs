@@ -1,5 +1,4 @@
-﻿using EcommerceBackend.Application.Dto.Cart;
-using EcommerceBackend.Domain.Models;
+﻿using EcommerceBackend.Domain.Models;
 
 namespace EcommerceBackend.Application.Interfaces
 {

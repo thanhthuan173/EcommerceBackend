@@ -1,5 +1,3 @@
-using EcommerceBackend.Domain.Models;
-
 namespace EcommerceBackend.Application.Dto.User
 {
     public class UserDetailDto

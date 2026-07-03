@@ -1,21 +1,15 @@
-﻿using AutoMapper;
-using EcommerceBackend.Application.Common.Query;
-using EcommerceBackend.Application.Dto;
-using EcommerceBackend.Application.Dto.Order;
-using EcommerceBackend.Application.Interfaces;
+﻿using EcommerceBackend.Application.Common.Query;
 using EcommerceBackend.Application.Interfaces.Services;
 using EcommerceBackend.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.Threading.Tasks;
 
 namespace EcommerceBackend.API.Controllers
 {
     [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
-    public class OrderController:ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly IOrderService _service;
 
@@ -24,7 +18,7 @@ namespace EcommerceBackend.API.Controllers
             _service = service;
         }
 
-        [Authorize(Roles ="ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet("all")]
         public async Task<IActionResult> GetOrders([FromQuery] OrderQueryParameters query)
         {

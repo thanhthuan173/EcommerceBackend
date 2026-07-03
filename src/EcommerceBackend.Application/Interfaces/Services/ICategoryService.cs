@@ -1,6 +1,5 @@
 ﻿using EcommerceBackend.Application.Common;
 using EcommerceBackend.Application.Common.Query;
-using EcommerceBackend.Application.Dto;
 using EcommerceBackend.Application.Dto.Product;
 
 namespace EcommerceBackend.Application.Interfaces.Services

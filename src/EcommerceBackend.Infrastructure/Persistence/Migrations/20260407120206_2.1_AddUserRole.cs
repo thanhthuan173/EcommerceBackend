@@ -60,11 +60,11 @@ namespace EcommerceBackend.Migrations
 
             migrationBuilder.InsertData(
                 table: "Roles",
-                columns: new[] { "Id", "Name" }, 
-                values: new object[,] 
-                { 
-                    { 1, "ADMIN" }, 
-                    { 2, "USER" } 
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "ADMIN" },
+                    { 2, "USER" }
                 });
         }
 

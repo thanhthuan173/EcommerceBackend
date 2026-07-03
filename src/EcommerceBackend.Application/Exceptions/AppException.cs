@@ -1,11 +1,11 @@
 ﻿namespace EcommerceBackend.Application.Exceptions
 {
-    public class AppException:Exception
+    public class AppException : Exception
     {
         public int StatusCode { get; set; }
         public string ErrorCode { get; set; }
 
-        public AppException(string message,int statusCode,string errorCode):base(message)
+        public AppException(string message, int statusCode, string errorCode) : base(message)
         {
             StatusCode = statusCode;
             ErrorCode = errorCode;

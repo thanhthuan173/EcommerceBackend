@@ -1,7 +1,4 @@
-﻿using EcommerceBackend.Domain.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace EcommerceBackend.Application.Dto.Cart
+﻿namespace EcommerceBackend.Application.Dto.Cart
 {
     public class CartItemDto
     {

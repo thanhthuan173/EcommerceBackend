@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace EcommerceBackend.Application.Dto.Order
+﻿namespace EcommerceBackend.Application.Dto.Order
 {
     public class OrderDetailDto
     {

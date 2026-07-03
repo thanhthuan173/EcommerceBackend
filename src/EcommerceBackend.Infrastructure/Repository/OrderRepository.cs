@@ -16,7 +16,7 @@ namespace EcommerceBackend.Infrastructure.Repository
             _context = context;
         }
 
-        private async Task<PagedResult<Order>> ApplyQueryOptions(IQueryable<Order> orders,OrderQueryParameters query)
+        private async Task<PagedResult<Order>> ApplyQueryOptions(IQueryable<Order> orders, OrderQueryParameters query)
         {
             if (query.MinTotalAmount != null)
                 orders = orders.Where(o => o.TotalAmount >= query.MinTotalAmount);
@@ -51,7 +51,7 @@ namespace EcommerceBackend.Infrastructure.Repository
             return await ApplyQueryOptions(orders, query);
         }
 
-        public async Task<PagedResult<Order>> GetByUserAsync(int userId,OrderQueryParameters query)
+        public async Task<PagedResult<Order>> GetByUserAsync(int userId, OrderQueryParameters query)
         {
             var orders = _context.Orders.Where(o => o.UserId == userId && !o.IsDeleted);
             query.IsDeleted = null;

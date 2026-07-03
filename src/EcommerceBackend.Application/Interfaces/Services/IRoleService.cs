@@ -1,5 +1,4 @@
 ﻿using EcommerceBackend.Application.Dto.Role;
-using EcommerceBackend.Domain.Models;
 
 namespace EcommerceBackend.Application.Interfaces.Services
 {

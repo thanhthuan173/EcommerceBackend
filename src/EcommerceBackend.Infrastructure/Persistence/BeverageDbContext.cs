@@ -1,10 +1,9 @@
 ﻿using EcommerceBackend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
 
 namespace EcommerceBackend.Infrastructure.Persistence
 {
-    public class EcommerceDbContext:DbContext
+    public class EcommerceDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }

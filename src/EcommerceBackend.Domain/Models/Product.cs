@@ -7,7 +7,7 @@ namespace EcommerceBackend.Domain.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        [Column("Price",TypeName ="decimal(18,2)")]
+        [Column("Price", TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
         public int Stock { get; set; }
         public string ImgUrl { get; set; }

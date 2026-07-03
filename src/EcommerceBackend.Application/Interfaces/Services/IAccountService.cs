@@ -1,7 +1,4 @@
 ﻿using EcommerceBackend.Application.Dto.Auth;
-using EcommerceBackend.Application.Dto;
-using EcommerceBackend.Domain.Models;
-using System.Security.Claims;
 
 namespace EcommerceBackend.Application.Interfaces.Services
 {

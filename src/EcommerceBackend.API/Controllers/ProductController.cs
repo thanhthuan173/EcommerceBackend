@@ -1,18 +1,14 @@
-﻿using AutoMapper;
-using EcommerceBackend.Application.Common.Query;
+﻿using EcommerceBackend.Application.Common.Query;
 using EcommerceBackend.Application.Dto.Product;
-using EcommerceBackend.Application.Interfaces;
 using EcommerceBackend.Application.Interfaces.Services;
-using EcommerceBackend.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace EcommerceBackend.API.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
-    public class ProductController:ControllerBase
+    public class ProductController : ControllerBase
     {
         private readonly IProductService _service;
 
@@ -46,12 +42,12 @@ namespace EcommerceBackend.API.Controllers
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto dto)
         {
             var product = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById),new {id=product.Id},product);
+            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
 
         [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct([FromRoute]int id, [FromBody]UpdateProductDto dto)
+        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] UpdateProductDto dto)
         {
             await _service.UpdateAsync(id, dto);
             return Ok("Update successfully");

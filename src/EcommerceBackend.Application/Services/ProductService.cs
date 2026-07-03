@@ -16,7 +16,7 @@ namespace EcommerceBackend.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository repo,ICategoryRepository cateRepo, IUnitOfWork unitOfWork, IMapper mapper)
+        public ProductService(IProductRepository repo, ICategoryRepository cateRepo, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _repo = repo;
             _cateRepo = cateRepo;
@@ -66,7 +66,7 @@ namespace EcommerceBackend.Application.Services
             var isExisted = await _repo.IsNameExistsAsync(dto.Name, dto.CategoryId);
             if (isExisted != null && isExisted.Id != id)
                 throw new AlreadyExistsException("Product name already exists in this category");
-            _mapper.Map(dto,product);
+            _mapper.Map(dto, product);
             await _unitOfWork.SaveChangesAsync();
         }
 
