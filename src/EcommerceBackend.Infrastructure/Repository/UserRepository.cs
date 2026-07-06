@@ -54,11 +54,11 @@ namespace EcommerceBackend.Infrastructure.Repository
             }
             if (!string.IsNullOrEmpty(query.Gender))
             {
-                users = users.Where(u => u.Gender.ToLower() == query.Gender.Trim().ToLower());
+                users = users.Where(u => u.Gender != null && u.Gender.ToLower() == query.Gender.Trim().ToLower());
             }
             if (!string.IsNullOrEmpty(query.Address))
             {
-                users = users.Where(u => u.Address.ToLower().Contains(query.Address.ToLower()));
+                users = users.Where(u => u.Address != null && u.Address.ToLower().Contains(query.Address.ToLower()));
             }
             if (query.FromDate.HasValue)
             {

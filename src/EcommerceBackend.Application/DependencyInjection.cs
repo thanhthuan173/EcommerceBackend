@@ -12,7 +12,7 @@ public static class DependencyInjection
     public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
     {
         // AutoMapper + FluentValidation
-        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        services.AddAutoMapper(cfg => { }, typeof(DependencyInjection).Assembly);
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
 
