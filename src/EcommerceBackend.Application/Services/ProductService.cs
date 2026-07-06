@@ -53,7 +53,10 @@ namespace EcommerceBackend.Application.Services
             var entity = _mapper.Map<Product>(dto);
             _repo.Add(entity);
             await _unitOfWork.SaveChangesAsync();
-            return _mapper.Map<ProductDto>(entity);
+            var category = await _cateRepo.GetByIdAsync(dto.CategoryId)??throw new NotFoundException("Category not found");
+            var product = _mapper.Map<ProductDto>(entity);
+            product.CategoryName=category.Name;
+            return product;
         }
 
         public async Task UpdateAsync(int id, UpdateProductDto dto)
