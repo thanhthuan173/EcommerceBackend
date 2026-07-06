@@ -60,9 +60,14 @@ namespace EcommerceBackend.Infrastructure.Repository
             return await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<Product?> IsNameExistsAsync(string prodName, int cateId)
+        public async Task<bool> IsNameExistsAsync(string prodName, int cateId)
         {
-            return await _context.Products.FirstOrDefaultAsync(p => p.Name.ToLower() == prodName.ToLower() && p.CategoryId == cateId);
+            return await _context.Products.AnyAsync(p => p.Name.ToLower() == prodName.ToLower() && p.CategoryId == cateId);
+        }
+
+        public async Task<bool> IsNameExistsAsync(string prodName, int cateId, int excludeId)
+        {
+            return await _context.Products.AnyAsync(p => p.Name.ToLower() == prodName.ToLower() && p.CategoryId == cateId && p.Id != excludeId);
         }
 
         public void Add(Product product)

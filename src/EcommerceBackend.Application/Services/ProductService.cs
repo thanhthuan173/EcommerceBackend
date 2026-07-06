@@ -46,7 +46,7 @@ namespace EcommerceBackend.Application.Services
 
         public async Task<ProductDto> CreateAsync(CreateProductDto dto)
         {
-            if (await _repo.IsNameExistsAsync(dto.Name, dto.CategoryId) != null)
+            if (await _repo.IsNameExistsAsync(dto.Name, dto.CategoryId))
                 throw new AlreadyExistsException("Product name already exists in this category");
             if (!await _cateRepo.ExistsAsync(dto.CategoryId))
                 throw new NotFoundException("Category not found");
@@ -58,15 +58,32 @@ namespace EcommerceBackend.Application.Services
 
         public async Task UpdateAsync(int id, UpdateProductDto dto)
         {
-            var product = await _repo.GetByIdAsync(id);
-            if (product == null)
-                throw new NotFoundException("Product not found");
-            if (!await _cateRepo.ExistsAsync(dto.CategoryId))
-                throw new NotFoundException("Category not found");
-            var isExisted = await _repo.IsNameExistsAsync(dto.Name, dto.CategoryId);
-            if (isExisted != null && isExisted.Id != id)
-                throw new AlreadyExistsException("Product name already exists in this category");
-            _mapper.Map(dto, product);
+            var product = await _repo.GetByIdAsync(id) ?? throw new NotFoundException("Product not found");
+            if (dto.CategoryId.HasValue)
+            {
+                if (!await _cateRepo.ExistsAsync(dto.CategoryId.Value))
+                    throw new NotFoundException("Category not found");
+
+                if (await _repo.IsNameExistsAsync(product.Name, dto.CategoryId.Value, id))
+                    throw new AlreadyExistsException("Product name already exists in this category");
+
+                product.CategoryId = dto.CategoryId.Value;
+            }
+            var categoryId = dto.CategoryId ?? product.CategoryId;
+            if (dto.Name is not null)
+            {
+                if (await _repo.IsNameExistsAsync(dto.Name, categoryId, id))
+                    throw new AlreadyExistsException("Product name already exists in this category");
+                product.Name = dto.Name;
+            }
+            if (dto.Description is not null)
+                product.Description = dto.Description;
+            if (dto.Price.HasValue)
+                product.Price = dto.Price.Value;
+            if (dto.Stock.HasValue)
+                product.Stock = dto.Stock.Value;
+            if (dto.ImgUrl is not null)
+                product.ImgUrl = dto.ImgUrl;
             await _unitOfWork.SaveChangesAsync();
         }
 

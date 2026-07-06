@@ -46,11 +46,11 @@ namespace EcommerceBackend.API.Controllers
         }
 
         [Authorize(Roles = "ADMIN")]
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] UpdateProductDto dto)
         {
             await _service.UpdateAsync(id, dto);
-            return Ok("Update successfully");
+            return NoContent();
         }
 
         [Authorize(Roles = "ADMIN")]

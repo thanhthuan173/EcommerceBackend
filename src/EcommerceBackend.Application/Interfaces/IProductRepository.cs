@@ -9,7 +9,8 @@ namespace EcommerceBackend.Application.Interfaces
         Task<PagedResult<Product>> GetAllAsync(ProductQueryParameters query);
         Task<Product?> GetByIdAsync(int id);
 
-        Task<Product?> IsNameExistsAsync(string prodName, int cateId);
+        Task<bool> IsNameExistsAsync(string prodName, int cateId);
+        Task<bool> IsNameExistsAsync(string prodName, int cateId,int excludeId);
 
         void Add(Product product);
         void Delete(Product product);
